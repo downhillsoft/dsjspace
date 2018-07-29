@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html>
+<body>	
+<canvas></canvas>
+<script>
+var cx=document.querySelector("canvas").getContext("2d");
+cx.fillRect(0,0,50,100);
+</script>
+</body>
+</html> 

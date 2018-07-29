@@ -1,0 +1,409 @@
+
+
+<!DOCTYPE html>
+<head>
+
+<!-- Global site tag (gtag.js) - Google Analytics - 20180211 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-93889774-3"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-93889774-3');
+</script>
+
+<title>downhillsoft javascript space</title>
+
+<meta name="viewport" content="width=device-width">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
+
+<style>
+
+@font-face{
+    font-family: raleway;
+    src: url('/page/font/raleway_thin-webfont.woff');
+    /* https://www.theleagueofmoveabletype.com */
+    }
+
+@font-face{
+    font-family: leaguegothic;
+    src: url('/page/font/leaguegothic-regular-webfont.woff');
+    /* https://www.theleagueofmoveabletype.com */
+    }
+
+@font-face{
+    font-family: junction;
+    src: url('/page/font/junction-light.woff');
+    /* https://www.theleagueofmoveabletype.com */
+    }
+
+  * {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    }
+
+body {
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    width: 96vw;
+    height: 96vh;
+    /*border: solid;*/
+    }
+
+.opebtncon {
+    width: 96vw;
+    }
+
+.opebtndiv {
+    display:flex;
+    flex-direction: row;
+    justify-content: center;
+    width:48%;
+    }
+
+.opebtndiv button{
+    width:90px;
+    height:35px;
+    font-size:1rem;
+    font-family:raleway;
+    }
+
+.opebtndiv  button {
+    color: black;
+    background: rgba(0,0,0,0);
+    border: solid 0px grey;
+    border: none;
+    outline: none;
+    outline-offset: 0;
+    }
+
+.opebtndiv  button:hover,
+.opebtndiv  button.hover {
+    /*border-color: black;*/
+    color: MediumSeaGreen; 
+    }
+
+#container {
+    background-color:transparent;
+    width:84vw;
+    height:96vh;
+    overflow:hidden;
+    /*border: 1px solid red;*/
+    }
+
+#textareacontainer {
+    width:40vw;
+    height:76vh;
+    float:left;
+    /*background-color:green;*/
+    /*border: 1px solid black;*/
+    }
+
+#textareaCode {
+    width:40vw;
+    height:76vh;
+    background-color: #ffffff;
+    font-family: consolas,"courier new",monospace;
+    padding:8px;
+    resize: none;
+    border:none;
+    line-height:normal;  
+    font-family: 'Inconsolata', monospace;
+    font-size:1em;
+    }
+
+#adareacontainer{
+    width:40vw;
+    height:9vh;
+    /*background-color:orange;*/
+    /*border: 1px solid black;*/
+    }
+
+#iframecontainer {
+    float:right;
+    width:40vw;
+    height:86vh;
+    /*  background-color:yellow;*/
+    /*  border: 1px solid black;*/
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    }
+
+#iframetop{
+    height:10px;
+    /*height:100px;*/
+    }
+
+#iframewrapper {
+    width:90%;
+    height:95%;
+    -webkit-overflow-scrolling: touch;
+    background-color: #ffffff;
+    /* box-shadow:0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);*/
+   }
+
+
+#iframeResult {
+   background-color: #ffffff;
+   height:100%;
+   width:100%;  
+   }
+
+
+
+
+@media screen and (max-width: 640px){
+
+  .opebtndiv {
+        width:100%;
+        }
+
+  .opebtndiv button {
+        width:50px;
+        height:28px;
+        font-size:10px;
+        margin-right:5px;
+        margin-left:5px;
+        }
+
+ body {
+      height: 200vh;
+      }
+  
+ #container {
+      height:200vh;
+      }
+
+ #iframecontainer {
+      width:100%;
+      }
+
+  #textareacontainer{
+      width:100%;
+      }
+
+  #textareaCode{
+      width:100%;
+      }
+
+  #iframetop{
+      height:0px;
+      }
+    }
+
+
+</style>
+
+</head>
+
+
+<body>
+
+<div class="opebtncon">
+<div class="opebtndiv" >
+    <button onclick="gotoBlog()">BLOG</button>
+    <button onclick="fullWindow()">FULL window</button>
+    <button onclick="pageLoad('menu')" >MENU</button>
+    <button onclick="submitTry(1)"  >run CODE</button>
+    <button onclick="hideCode()" id="hideCodeBtn">HIDE code</button>
+</div>
+</div>
+
+
+<div id="container"> 
+    <div id="iframecontainer">
+    <div id="iframetop"></div>
+    <div id="iframewrapper"></div>  
+    </div>
+
+
+    <div id="textareacontainer">
+    <textarea autocomplete="off" 
+            id="textareaCode" 
+            wrap="logical" 
+            spellcheck="false">
+    
+<!DOCTYPE html>
+<html>
+<title>top page</title>
+<style>
+@font-face{
+font-family:spartan;
+src: url('/page/font/leaguespartan-bold.woff');
+/* https://www.theleagueofmoveabletype.com */
+}
+body{
+ padding-left:20%;
+ width:70%;
+ font-family:spartan;
+}
+</style>
+<body>  
+<h2>dowhillsoft javascript space</h2>
+<canvas></canvas>
+<script>
+  var ctx = document.querySelector("canvas").getContext("2d");
+  ctx.fillStyle = "black";
+  ctx.strokeRect(50,10,100,60);
+  ctx.fillRect(175,10,100,60);
+  </script>
+</body>
+</html> 
+
+      </textarea>
+    
+      <div id="adareacontainer">
+      </div>
+
+      </div>
+
+</div>
+
+
+<script>
+
+var paged = "";
+
+var dc= "on";
+
+pageLoad(getParameterValueByName("page"));
+
+
+function getParameterValueByName( name ){
+    name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+    var regexS = "[\\?&]"+name+"=([^&#]*)";
+    var regex = new RegExp( regexS );
+    var results = regex.exec( window.location.href );
+    
+    if( results == null ){
+        return "blank";
+        } else {
+        return decodeURIComponent(results[1].replace(/\+/g, " "));
+        }
+}
+
+
+function pageLoad(page){
+  
+  var client = new XMLHttpRequest();
+
+  if (page.indexOf(".html")>0){
+      console.log("pageLoad(page) '.html' found ");
+      client.open('GET','/page/' + page);
+      } else {
+      client.open('GET','/page/' + page + '.html');
+      }
+
+  client.onreadystatechange = function(){
+      if (client.readyState === 4 && client.status === 200){
+          var element = document.getElementById('textareaCode');
+          element.innerHTML = client.responseText;
+          element.value =  client.responseText;
+          paged = page;
+          console.log(paged + " paged");
+          }
+      }
+
+  client.send();
+
+  //20171105 basically, only for menu button
+  var rundoc = function(){
+    submitTry(1);
+    } 
+  
+  setTimeout(rundoc, 1000);
+}
+
+
+function submitTry(n) {
+
+  var text = document.getElementById("textareaCode").value;
+  var ifr = document.createElement("iframe");
+  ifr.setAttribute("frameborder", "0");
+  ifr.setAttribute("id", "iframeResult");
+  ifr.setAttribute("name", "iframeResult");  
+  document.getElementById("iframewrapper").innerHTML = "";
+  document.getElementById("iframewrapper").appendChild(ifr);
+
+    var ifrw = (ifr.contentWindow) ? ifr.contentWindow : (ifr.contentDocument.document) ? ifr.contentDocument.document : ifr.contentDocument;
+    ifrw.document.open();
+    ifrw.document.write(text);  
+    ifrw.document.close();
+    if (ifrw.document.body && !ifrw.document.body.isContentEditable) {
+      ifrw.document.body.contentEditable = true;
+      ifrw.document.body.contentEditable = false;
+    }
+
+    var doc= ifr.contentWindow.document;
+    var body_ = doc.body;
+    var height = Math.max( body_.scrollHeight, body_.offsetHeight) + 25;
+    var width  = Math.max( body_.scrollWidth, body_.offsetWidth ) + 38;
+    height = height + "px";
+    width = width + "px";
+
+}
+
+
+var receiveMessage = function(event) {
+    
+    pageLoad(event.data);
+    //wait//
+    var rundoc = function(){
+    console.log("index.html receiveMessage " );
+    submitTry(1);
+    }  
+
+    setTimeout(rundoc, 1000);
+}
+
+
+addEventListener("message", receiveMessage, true);
+
+
+function hideCode(){
+
+  var codePlace = document.getElementById("textareacontainer");
+  var presPlace = document.getElementById("iframecontainer");
+  var codePlace2 = document.getElementById("textarea");
+  var codePlace3 = document.getElementById("textareawrapper");
+  var codePlace4 = document.getElementById("textareaCode");
+  var btn = document.getElementById("hideCodeBtn");
+
+  if(dc=="on") {
+    codePlace.style.visibility = "hidden";
+    presPlace.style.float = "left";
+    dc="off";
+    btn.innerHTML = "SHOW code"
+    } else {
+    location.reload();
+    }
+}
+
+
+function fullWindow(){
+
+    if (paged=="menu"){
+      window.open('https://downhillsoftjspace.firebaseapp.com/?page=menu', '_blank');
+      } else {
+      window.open('https://downhillsoftjspace.firebaseapp.com/page/' + paged + '.html');
+      }
+}
+
+
+function gotoBlog(){
+  window.open('http://blog.downhillsoft.com/');
+}
+
+
+
+</script>
+
+
+</body>
+</html>

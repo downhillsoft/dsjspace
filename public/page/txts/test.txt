@@ -1,0 +1,18 @@
+<p>drags</p>
+<div id="dgrey" style="background:grey; width:65px;height:25px">
+<div id="dblak" style="background:black; width:60px;height:20px"></div>
+</div>
+<div id="debuglabel"></div>
+<script>
+mess("messages:");
+function mess(){
+var mes = "test"
+var dlbl = document.getElementById("debuglabel");
+dlbl.innerHTML  = dlbl.innerHTML + "<br>" +   mes;
+}
+
+var dblak = document.getElementById("dblak");
+dblak.addEventListener("click",mess);
+	
+
+</script>

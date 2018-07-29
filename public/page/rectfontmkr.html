@@ -1,0 +1,300 @@
+ <!DOCTYPE html>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+ <head>
+  <style>
+
+@font-face{
+font-family: ostrich;
+src: url('font/ostrich-sans-rounded.woff');
+/* https://www.theleagueofmoveabletype.com */
+}
+
+    #thelink::selection {
+  background-color: white;
+}
+    #thelink:focus {
+  outline: 0;
+  border-color: white;
+}
+
+#thelinkdiv{
+font-size:10px;
+}
+
+#main{
+  /*width:370px;*/
+ /* padding:0px;*/
+font-family: ostrich;
+
+/*width:370px;*/
+/*  margin-left:auto;
+  margin-right:auto;*/
+  position:relative;
+  /*width:100vw;*/
+  max-width: 400px;
+  min-height: 1000px;
+  margin:1em auto;
+  /*margin4 ue migi shita hidari*/
+  /*margin2 ueshita migihidari*/
+   /* margin:110px auto 120px 200px;*/
+}
+
+#itxt{
+margin-left:auto;
+margin-right:auto;
+font-family: ostrich;
+}
+
+#sizelist{
+margin-left: 10px;
+font-family: ostrich;
+border:none;
+}
+
+
+#preview{
+-ms-zoom: 0.5;
+-moz-transform-origin:0 0;
+-o-transform-origin: 0 0;
+-webkit-transform-origin: 0 0;
+
+-moz-transform:scale(0.5,0.5);
+-webkit-transform:scale(0.5,0.5);
+-o-transform:scale(0.5,0.5); 
+-ms-transform:scale(0.5,0.5);
+transform:scale(0.5,0.5); 
+}
+
+
+#controlp{
+ 
+  margin-top:10px;
+  margin-bottom:10px;
+
+}
+
+body {
+ font-family: ostrich;
+}
+
+ button{
+  width:60px;
+  height:20px;
+  font-size: 12px;
+    background: none;
+    border: none;
+    display: inline;
+    margin: 0;
+    padding: 0;
+    outline: none;
+    outline-offset: 0;
+    /* Additional styles to look like a link */
+    color: black;
+    cursor: pointer;
+    text-decoration: underline;
+     text-align: left;
+font-family: ostrich;
+}
+
+/*section.border button {
+  color: grey;
+  background: rgba(0,0,0,0);
+  border: solid 2px grey;
+}
+section.border button:hover,
+section.border button.hover {
+  border-color: black;
+  color: black;
+}*/
+
+  </style>
+
+
+ </head>
+ <body>
+
+ <div id="main">
+
+ <div id="inputpanel">
+ <input type="text" id="itxt" style="width:180px;"/>
+ </div>
+
+<div id="controlp">
+
+<span><button onclick="createlink()">preview</button></span>
+<span><button onclick="copylink()">copy link</button></span>
+
+<span style="font-size:12px;color: black;text-decoration: underline;text-align: left;">size
+</span>
+
+<span id="sizelistspan"> 
+   <select id="sizelist" size="1">
+    <option value="0.1" selected="true">1</option>
+    <option value="0.2">2</option>
+    <option value="0.3">3</option>
+    <option value="0.4">4</option>
+    <option value="0.5">5</option>
+  </select>
+</span>
+
+<span><button onclick="feeluck()">feeling lucky</button></span>
+
+
+
+  </div>
+
+  <span style="font-size:12px;"> * comma for new line, dot to clear </span><br><br>
+
+
+<div id="thelinkdiv">
+  
+</div >
+
+
+
+
+<input type="text" id="thelink"  style="width:100px;border:none;color:white;"  spellcheck="false"/><br>
+
+<iframe id="preview"
+    title="preview"
+    width="400"
+    height="1000"
+    frameborder="0"
+    scrolling="no"
+    marginheight="0"
+    marginwidth="0"
+    src="">
+</iframe>
+<br>
+<br>
+<!-- <small>
+  <a href="https://maps.google.com/maps?f=q&amp;source=embed&amp;hl=es-419&amp;geocode=&amp;q=buenos+aires&amp;sll=37.0625,-95.677068&amp;sspn=38.638819,80.859375&amp;t=h&amp;ie=UTF8&amp;hq=&amp;hnear=Buenos+Aires,+Argentina&amp;z=11&amp;ll=-34.603723,-58.381593" style="color:#0000FF;text-align:left"> See bigger map </a>
+</small> -->
+
+
+ </div>
+ </body>
+
+
+ <script>
+
+//var capAl= ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","A","B","C","D","E","F","G","H","I"];
+var capAl= ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","1","2","3","4","5","6","7","8","9","0","A","B","C","D","E","F","G","H","I"];
+var thestring="";
+//var rnd=1;
+
+
+function genarateString(){
+
+var thestring = document.getElementById("itxt").value;
+var outstring ="";
+
+rnd = Math.floor( Math.random() * 9 ) + 1;
+//rnd=0;
+
+console.log("rnd:" + rnd);
+
+  //helper
+  function myindexOf(arr,tar){
+  if(arr.indexOf(tar)==-1){return 36; //26;
+   } else {return arr.indexOf(tar);
+     } }
+
+for (var i =0; i<thestring.length; i++){
+
+    var tarch = thestring.charAt(i);
+
+    if (myindexOf(capAl,tarch.toUpperCase())==36){ //26){
+      console.log(tarch.toUpperCase() + " is 36");//" is 26");
+    outstring = outstring + tarch.toUpperCase();  //not in the list.
+     }else{
+      outstring = outstring + capAl[myindexOf(capAl,tarch.toUpperCase()) + rnd]
+          }
+    //for loop
+    }
+
+ console.log("generateString,thestring: " + thestring);
+  console.log("generateString,outstring: " + outstring);
+ return outstring;
+
+
+}
+
+
+
+function createlink(){
+
+var ipt = document.getElementById("itxt").value;
+var ipt = genarateString(ipt);
+//var ipt = encodeURI(ipt);
+
+
+
+var selobj = document.getElementById("sizelist");
+var szval = selobj.value;
+
+console.log(szval);
+
+
+var link =  "=" + ipt + "&magnitu=" + szval + "&rnd=" + rnd;
+
+
+//link = encodeURI(link);
+link = encodeURIComponent(link);
+
+// link = "http://127.0.0.1:8887/page/rectfont.html?rectify" + link;
+link = "https://downhillsoftjspace.firebaseapp.com/page/rectfont.html?rectify" + link;
+//
+document.getElementById("thelinkdiv").innerHTML = '<a class="training" href="' + link + '"  target="_blank">' + link + '</a><br>';
+document.getElementById("thelink").value = link;
+document.getElementById("preview").src = link;
+// document.getElementById("hid").value = link;
+}
+
+
+
+
+function feeluck(){
+
+var ipt = document.getElementById("itxt").value;
+var ipt = genarateString(ipt);
+//var ipt = encodeURI(ipt);
+
+
+
+var selobj = document.getElementById("sizelist");
+var szval = selobj.value;
+
+console.log(szval);
+
+
+var link =  "=" + ipt + "&magnitu=" + szval + "&rnd=" + rnd + "&flk=yes";
+
+
+//link = encodeURI(link);
+link = encodeURIComponent(link);
+
+//link = "http://127.0.0.1:8887/page/rectfont.html?rectify" + link;
+link = "https://downhillsoftjspace.firebaseapp.com/page/rectfont.html?rectify" + link;
+//
+document.getElementById("thelinkdiv").innerHTML = '<a class="training" href="' + link + '"  target="_blank">' + link + '</a><br>';
+document.getElementById("thelink").value = link;
+document.getElementById("preview").src = link;
+// document.getElementById("hid").value = link;
+}
+
+
+
+
+
+
+
+function copylink(){
+  var copyText = document.getElementById("thelink");
+  //var copyText = document.getElementById("thelink");
+  copyText.select();
+  document.execCommand("Copy");
+}
+
+ </script>
+ </html>

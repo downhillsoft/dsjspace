@@ -1,0 +1,165 @@
+ <!DOCTYPE html>
+ <head><head>
+
+ <body>
+<div>
+
+<div><input type="text" id="addcode" style="width:300px"/>
+<button onclick="addcode()">add</button></div>
+
+
+</div>
+
+
+
+ <canvas height="1350" width="650" background="grey"></canvas>
+
+ <div style="visibility:collapse;"><input type="text" id="fullcode" style="width:300px"/>
+<button onclick="runrect()">run</button></div>
+
+<script src="code/quak.js"></script>
+ <script>
+ var cx = document.querySelector("canvas").getContext('2d');
+cx.fillStyle="lightgrey";	
+//cx.fillRect(0,0,350,350);
+cx.fillRect(0,0,650,1350);
+
+var iptxt = document.getElementById("addcode");
+iptxt.addEventListener("focus",function(){
+this.value="";
+});
+
+
+
+function addcode(){
+var addbox = document.getElementById("addcode");
+currentcode.addingcode(addbox.value);
+var box = document.getElementById("fullcode");
+//box.value = currentcode.workingstring;
+box.value = currentcode.executestring();
+
+runrect();
+}
+
+
+function runrect(){
+var box = document.getElementById("fullcode");
+console.log(box.value);
+var code = box.value;
+//var out = rPser(code,1);
+//var got = rExer(out);
+var got = Quak.eXecute(code,1);
+simpledrawer(got);
+}
+
+function simpledrawer(arr){
+
+// 		var cx = document.querySelector("canvas").getContext('2d');		
+// 		cx.fillStyle="lightgrey";		
+// 		cx.fillRect(0,0,300,300);
+//      var somestring = "20,10,1,1";
+//      console.log(somestring.split(",")[0]); 
+
+ var cx=document.querySelector("canvas").getContext("2d");
+
+ for (var i = 0; i<arr.length;i++){
+
+    if  (arr[i].split(",")[4]=="B"){
+     cx.fillStyle="black";
+    }else if (arr[i].split(",")[4]=="W"){
+    cx.fillStyle="white";
+    }else{
+    cx.fillStyle="lightgrey";
+    }
+
+        cx.fillRect(
+         arr[i].split(",")[0]
+        ,arr[i].split(",")[1]
+        ,arr[i].split(",")[2]
+        ,arr[i].split(",")[3]
+        );
+ }
+}
+
+
+
+
+/////////////////////
+//CURRENTCODEOBJECT//
+/////////////////////
+
+var currentcode = {};
+
+currentcode.workingstring = "";
+
+currentcode.rectcount = 0;
+
+currentcode.executestring = function(){
+var temp = currentcode.workingstring.replace(/,CHILDREN/g,"");
+return temp = temp.replace(/CHILDREN/g,"");
+}
+
+currentcode.addChild = function(chldstr,noden){
+
+currentcode.rectcount = currentcode.rectcount + 1;
+
+var idx = null;
+var char = "";
+var tarstr = "";
+var wrstr =  currentcode.workingstring;
+
+if(noden==undefined){
+    noden=currentcode.rectcount;
+}
+
+    for (var place = 1 ; place < wrstr.length + 1; place++){
+        char = wrstr[place - 1]
+        tarstr= tarstr + char;
+        if (char == "<") {idx = idx + 1;}
+        if (char == ">") {idx = idx - 1;}
+        if (char == "C"){//hey check "CHILDREN"
+                var cflag = "c";
+             }else{cflag="noc";}
+        if(cflag == "c" && idx == noden){
+            //var ido = tarstr.indexOf("CHILDREN");
+            var ido = place ;
+            var len = wrstr.length;
+            var mae =  wrstr.slice(0,ido-1);
+            var ushiro = wrstr.slice(ido - 1,len);
+            currentcode.workingstring = mae + chldstr  + ushiro;
+            //wrstr.length = wrstr.length + 11;
+            //place = place + 11;
+            wrstr.length = wrstr.length + chldstr.length;
+            place = place + chldstr.length;
+            return; 
+        }          
+    }
+}
+
+currentcode.codedresser = function(string) {
+ return "<" + string + ",CHILDREN>";
+}
+
+currentcode.addingcode = function(string,whichnode){
+
+//currentcode.rectcount = currentcode.rectcount + 1;
+
+    if(currentcode.workingstring == ""){
+        currentcode.workingstring = "<" + string + ",CHILDREN>";
+        return currentcode.executestring()
+    }
+    else{
+    currentcode.addChild(currentcode.codedresser(string),whichnode);
+    //var out = currentcoce.workingstring;
+    var out = currentcode.executestring();
+    return out;
+    }
+}
+
+
+
+		
+
+  </script>
+  </body>
+  </html>

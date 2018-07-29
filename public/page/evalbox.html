@@ -1,0 +1,135 @@
+
+
+
+<html>
+<head>
+<style>
+body {
+	background-color: #f1f1f1;
+	font-family: Helvetica,Arial,Verdana;
+
+}
+
+.redfamily {
+	color: red;	
+}
+.search-box,.close-icon,.search-wrapper {
+	position: relative;
+	padding: 10px;
+}
+.search-wrapper {
+	width: 500px;
+	margin: auto;
+	margin-top: 50px;
+}
+.search-box {
+	width: 80%;
+	border: 1px solid #ccc;
+  outline: 0;
+  border-radius: 15px;
+}
+.search-box:focus {
+	box-shadow: 0 0 15px 5px #b0e0ee;
+	border: 2px solid #bebede;
+}
+
+
+</style>
+<script>
+
+function trymyeval(str)
+{
+
+
+
+//var str = e.currentTarget.value;
+var hantei = str.indexOf("^");
+var out;
+
+if (hantei>0){
+out = eval(powtrans(str));
+}else{
+out = eval(str);
+}
+
+console.log(out);
+if(out!="" && out!=undefined && out!=null){
+thebox.value = str + "=" + out; return;}
+
+}
+
+
+
+function powtrans(test){
+var place = test.indexOf("^");
+
+if(place > 0)
+{
+var pleft = fndNxtreme(test,place,-1);
+var pright = fndNxtreme(test,place,1);
+var tar = pleft + "^" + pright;
+var out = "Math.pow(" + pleft + "," + pright + ")";
+console.log(test + " target:" + tar + "..");
+console.log(out);
+var rep = test.replace(tar,out);
+
+return powtrans(rep);
+
+}
+else{ return test;}
+
+}
+
+function fndNxtreme(str,place,leftright){
+var p1 = place;
+var i = leftright;
+var c = str.charAt(place);
+var f = "go";
+var o = "";
+var k = 0;
+
+while(f == "go"){
+place = place + i;
+c = str.charAt(place);
+if (c=="(" && leftright==1){k=k+1;}
+if (c==")" && leftright==-1){k=k+1;}
+
+if (/[^\+\-\*\/\^\(\)]/.test(c) || k > 0){o = myconcat(leftright,o,c);}   //is not operator                   
+else if  (c == "-" && (place == p1 + 1)) {o = myconcat(leftright,o,c);}   //minus value on right
+else if (/[\+\-\*\/\^\(\)]/.test(c) && k==0){f = "end";} //is operator
+else if (c == 0 || c==""){f = "end";} //is start
+}
+
+return o;
+
+function myconcat(leftright,c1,c2){
+  if(leftright==1){
+    if(c2=="("){}
+    if(c2==")"){k = k - 1;}
+       return c1 + c2;
+       }
+  else if(leftright==-1){
+    if(c2==")"){}
+    if(c2=="("){k = k - 1;}    
+       return c2 + c1;
+       }
+  }
+
+}
+
+</script>
+</head>
+
+<body>
+
+
+<div class="search-wrapper">
+	
+	<input type="text" name="focus" class="search-box" id="thebox" onchange="trymyeval(this.value)"/>
+		
+	
+</div>
+
+
+</body>
+</html>

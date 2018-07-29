@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<head><tittle></tittle></head>
+<style>
+
+
+@font-face{
+font-family: leaguegothic;
+src: url('/page/font/leaguegothic-regular-webfont.woff');
+/* https://www.theleagueofmoveabletype.com */
+}
+
+
+body { 
+  overflow: hidden;
+}
+
+.invi {
+  visibility: hidden;
+}
+.visi {
+  visibility: visible;
+  background-color: GhostWhite;
+  color:DarkSlateGrey;
+   font-family: leaguegothic;
+    font-size: 20px;
+    width:80px;
+    padding: 10px 25px;
+}
+.jama {
+		height:500px;
+}
+.btn {
+  background-color: GhostWhite;
+  color:DarkSlateGrey;
+     font-family: leaguegothic;
+  border:none;
+  font-size: 20px;
+  padding: 10px 25px;
+  margin-bottom:10px;
+}
+
+</style>
+<body id= "body">
+ <button onclick="startFromButton()" class = "btn" id="startbtn">START</button>
+<!-- <div id = "jama"><br><br><br><br><br><br><br><br><br></div> -->
+	<div id = "cont"></div>
+ 
+	<div id = "pnts2" class = "visi"></div> 
+	<div id = "t1"   class = "invi"></div>
+	<div id = "t2"   class = "invi"></div>
+	<div id = "ptr1" class = "invi"></div>
+	<div id = "ptr2" class = "invi"></div>
+	<div id = "thgs" class = "invi"></div>
+    <div id = "thgs2" class = "invi"></div>
+    <div id = "thgs3" class = "invi"></div>
+    <div id = "thgs4" class = "invi"></div>
+	<div id = "ltch" class = "invi"></div> 
+	<div id = "pnts" class = "invi"></div> 
+
+</body>
+<script>
+
+
+var lvlmap = [
+"         h--       ",
+"xxxxxxxxxxxxxxxxxxx",
+"x                 x",
+"x                 x",
+"x         m--     x",
+"x                 x",
+"x                 x",
+"x                 x",
+"x                 x",
+"x                 x",
+"x                 x",
+"x            s    x",
+"x                 x",
+"x                 x",
+"x                 x",
+"x                 x",
+"x                 x",
+"x                 x",
+"x        o        x",
+"x                 x",
+"x                 x",
+"xxxxxxxxxxxxxxxxxxx",
+"        h--        ",
+];
+
+
+var t1   = document.getElementById("t1");
+var t2   = document.getElementById("t2");
+var ptr1 = document.getElementById("ptr1");
+var ptr2 = document.getElementById("ptr2");
+var thgs = document.getElementById("thgs");
+var thgs2 = document.getElementById("thgs2");
+var thgs3 = document.getElementById("thgs3");
+var thgs4 = document.getElementById("thgs4");
+var ltch = document.getElementById("ltch");
+var pnts = document.getElementById("pnts");
+var body = document.getElementById("body");
+var pnts2 = document.getElementById("pnts2");
+
+body.addEventListener('touchenter',
+	function(e){
+		e.preventDefault();
+	}
+	);
+
+
+function lvl(lvlmap){
+
+	this.scale = 10;
+	this.height = lvlmap.length * this.scale;
+	this.width = lvlmap[0].length * this.scale;
+	var s = this.scale;
+	this.walls = [];
+	this.pucks = [];
+	this.strikers = [];
+	this.things = [];
+	this.lststouch = ["nothing"];
+	this.points = 100000000;
+	this.lststrikecounter = 101;
+	this.uixy = [];
+	this.boardrangex = [];
+	this.boardrangey = [];
+	this.targetwalls = [5,6,7,8];
+	this.counters = [];
+	this.counters[0] = 0;
+	this.counters[1] = 0;
+  this.counters[2] = 0;
+	this.hittarwall = 0;
+	//0:raw , 1:wallcounter, 2:strikercount
+  var tempsc =0;
+
+	var x=0;
+	var y=0;
+
+        for (var i = 0; i < lvlmap.length; i++ ){
+             var line = lvlmap[i];
+             y = i * s;
+
+             for (var l = 0; l < line.length; l++){
+             	 x = l * s;
+
+
+                 var ele = line.substring(l,l+1);
+
+
+                 if (ele == " " || ele == "-" ){
+                 	//nothing
+                 } else if (ele ==  "x" ) {
+                 	awall = new wall(new Vector(x,y),s,s);     	
+                 	//awall.deflines();
+                 	awall.moved="yes";
+                 	awall.setbindings(this.walls[this.walls.length -1]); //shokika
+                 	this.walls.push(awall);
+                 	this.things.push(awall);
+                 } else if (ele == "o") {
+                 	//apuck  = new puck(new Vector(x,y),s/2,new Vector(1.3,1.3));
+                 	//apuck  = new puck(new Vector(x,y),s/2,new Vector(-10,-9));
+                 	//apuck  = new puck(new Vector(x,y),s/2,new Vector(5,8));
+                 	for (var pn = 0; pn < 1; pn++){
+
+					var n1 = somenumber(1,5,-1);
+					var n2 = somenumber(1,5,-1);
+
+					apuck  = new puck(new Vector(x,y),s/2,new Vector(n1,n2));
+                 	this.pucks.push(apuck);
+                 	this.things.push(apuck);
+                    }
+
+                 } else if (ele == "s") {  	
+
+                 }
+             }
+        }       
+}
+
+lvl.prototype.animator = function(){
+
+
+//set counters
+  this.counters[0] = this.counters[0] + 1; //animator counter
+  this.counters[2] = 0; //strikers counter
+
+  if (this.counters[0] % 100 == 0){
+      this.counters[1] = this.counters[1] + 1;
+      var onetoten = Math.floor(Math.random() * 10) + 1;
+      if (onetoten > 3  ){
+      	this.targetwalls[0] = this.targetwalls[0] + 1;
+      	this.targetwalls[1] = this.targetwalls[1] + 1;
+      	this.targetwalls[2] = this.targetwalls[2] + 1;
+      	this.targetwalls[3] = this.targetwalls[3] + 1;
+      } else { 
+      			if(this.targetwalls[0] < 2){
+
+      			} else {
+      				    this.targetwalls[0] = this.targetwalls[0] - 1;
+      					this.targetwalls[1] = this.targetwalls[1] - 1;
+      					this.targetwalls[2] = this.targetwalls[2] - 1;
+      					this.targetwalls[3] = this.targetwalls[3] - 1;
+      			}
+
+      }
+  }
+
+//set canvas range
+  //this.boardrangex[0] = this.canvas.getBoundingClientRect().left;
+  //this.boardrangex[1] = this.canvas.getBoundingClientRect().right - (this.scale * 2);
+  //this.boardrangey[0] = this.canvas.getBoundingClientRect().top + (this.scale * 1);
+  //this.boardrangey[1] = this.canvas.getBoundingClientRect().bottom - (this.scale * 3);
+//set canvas range
+  this.boardrangex[0] = 8;
+  this.boardrangex[1] = 178;
+  this.boardrangey[0] = 18;
+  this.boardrangey[1] = 208;
+
+
+  for(var t = 0; t< this.things.length; t++){
+
+  	if (this.things[t].type == "puck"){
+
+  		var puck = this.things[t];
+
+  		//check puckout and if not act, if yes add another puck
+    	if (   puck.x < this.boardrangex[0] - 5 || puck.x > this.boardrangex[1] + 5
+        ||     puck.y < this.boardrangey[0] - 10 || puck.y > this.boardrangey[1] + 10
+        ||  isNaN(puck.x) || isNaN(puck.y) 
+        ||  puck.x == undefined || puck.y == undefined  )
+    		{   var n1 = somenumber(1,5,-1);
+		    	var n2 = somenumber(1,5,-1);
+    	    	//puck.reborn(puck,Vector(this.boardrangex[1] / 2, this.boardrangey[1] / 2),this.scale/2,new Vector(0,0));
+    			}  
+
+
+  		puck.collide = "no";
+
+  		for(var d = 0; d < puck.arrx.length; d++){
+
+  			if(puck.collide == "yes"){
+  				return;
+  			}
+
+  			surf_x = puck.arrx[d];
+  			surf_y = puck.arry[d];
+
+  			for (var w = 0; w < this.walls.length; w++){
+  				var awall = this.walls[w];
+
+  				var collisioned = awall.checkcollision(surf_x , surf_y , puck.x, puck.y, puck);
+					
+  				if ( collisioned[0] == "yes"){
+
+  						puck.collide = "yes";
+
+  						//console.log("animator, collision detected surf_x:" + rounder(surf_x,3) 
+  						//	                                     + ",surf_y:" + rounder(surf_y,3) 
+  						//	                                     + ",puck.x:" + rounder(puck.x,3) 
+  						//	                                     + ",puck.y:" + rounder(puck.y,3) );
+
+  						puck.setvect1(new Vector(puck.vect1.x * collisioned[1].x, puck.vect1.y * collisioned[1].y));
+						//puck.x = collisioned[2].x + puck.x ;
+  						//puck.y = collisioned[2].y + puck.y ;
+  						puck.x = collisioned[2].x ;
+  						puck.y = collisioned[2].y ;
+
+  						this.lststouch[0] = "wall"; 
+  						this.lststouch[1] = puck.x; 
+  						this.lststouch[2] = puck.y;
+
+  						if (this.targetwalls.indexOf(w) != -1){
+  							this.hittarwall = this.hittarwall + 1;
+
+                  //add wall
+                  if (this.hittarwall % 3 == 0)
+                  {
+                    var whatidx = Math.floor(Math.random() * this.walls.length) + 1;
+                    this.targetwalls.push(whatidx);
+                  }
+  						}
+  				}
+
+  				//puck.collide == "no"; //ISK20180217
+  			}
+  		}
+    
+
+    	puck.act(1); 
+    //this.things[t].type == "puck")
+  	}
+
+  	if (this.things[t].type == "wall"){
+  		var awall = this.things[t];
+  		  	if(w != 0)
+  			awall.setbindings( this.walls[w-1] );
+  			awall.act();
+  	//this.things[t].type == "wall")		
+  	}
+
+
+  	//if (this.things[t].type == "striker" && this.lststrikecounter > 10){
+    if (this.things[t].type == "striker" && this.lststrikecounter > 5){
+      this.counters[2] = this.counters[2] + 1;
+
+      if (this.strikers[0] == undefined){
+
+
+      } else {
+
+  		var astriker = this.strikers[0];
+      var puckstrike = astriker.check_puckstrike(this);
+
+    		if (puckstrike == "yes"){
+    			this.lststouch[0] = "striker";
+  	   		this.lststouch[1] = astriker.x;
+  		  	this.lststouch[2] = astriker.y;
+  			  this.lststrikecounter = 0;
+  		    }
+
+      }
+  	//this.things[t].type == "striker")
+  	}
+
+  //for(var t = 0; t< this.things.length; 
+  }
+
+  
+
+ 
+  if (this.lststouch[0] == "wall" ){
+  	this.lststrikecounter = 101;
+  	this.points = this.points - 123123;
+  } else if (this.lststouch[0] == "striker"){
+  	this.lststrikecounter = this.lststrikecounter + 1;
+  	this.points = this.points + 123123;
+  }
+
+  ltch.innerHTML = "animator, ltch:" + this.lststouch;
+  pnts.innerHTML = "animator, pnts:" + this.points;
+
+  thgs.innerHTML = "animator, boardrange x,y:" +  this.boardrangex[0] + "-"  + this.boardrangex[1] + ","
+  											   +  this.boardrangey[0] + "-"  + this.boardrangey[1] ;
+  thgs2.innerHTML = "animator, thgs: strikers:" + this.strikers.length + ",pucks:" + this.pucks.length;
+  thgs3.innerHTML = "animator, user interacion at x:" + this.uixy[0] + ",y:" + this.uixy[1];  
+  thgs4.innerHTML = "animator, counters[0],[1]:" + this.counters[0] + "," + this.counters[1];
+  pnts2.innerHTML = "HITS:" + this.hittarwall;
+  
+
+//lvl.prototype.animator 
+}
+
+
+function Vector(x,y){
+    return {
+        x : x,
+        y : y
+    };
+}
+
+function wall(place,w,h){			
+	this.type = "wall";
+    this.x = place.x;
+    this.y = place.y;
+    this.w = w;
+    this.h = h;
+    this.lines = [];
+    this.bindings = [];
+    this.vect1 = new Vector(0,0);
+    this.moved = "no";
+
+    function deflines(x,y,w,h,lines) {
+    	var lnvec = [];
+    	lnvec.push(new Vector( x, y));
+		lnvec.push(new Vector( x + w, y));
+		lines.push(lnvec);
+		
+		lnvec = [];
+		lnvec.push(new Vector(x + w, y));
+		lnvec.push(new Vector(x + w, y + h));
+		lines.push(lnvec);
+
+		lnvec = [];
+		lnvec.push(new Vector(x + w, y + h));
+		lnvec.push(new Vector(x, y + h));
+		lines.push(lnvec);
+
+		lnvec = [];
+		lnvec.push(new Vector(x, y + h));
+		lnvec.push(new Vector(x, y));
+		lines.push(lnvec);
+		lnvec = null;
+    }
+
+    deflines(this.x,this.y,this.w,this.h,this.lines);
+}
+
+wall.prototype.setbindings = function(olderwall){
+
+if (olderwall == undefined)
+	return;
+
+if(this.moved == "yes"){
+
+	//top line binding
+	this.bindings[0] = 0;
+	 for (var l = 0; l < 4; l++ ){
+     if( comparelines(this.lines[0], olderwall.lines[l]) == true ){
+     	this.bindings[0] = 100;
+     	olderwall.bindings[l] = 100;
+		}
+	}
+
+	//right side binding
+	this.bindings[1] = 0;
+	for (var l = 0; l < 4; l++ ){
+     if( comparelines(this.lines[1], olderwall.lines[l]) == true ){
+     	this.bindings[1] = 100;
+     	olderwall.bindings[l] = 100;
+     	} 
+	}
+
+	//bottom side binding
+	this.bindings[2] = 0;
+	 for (var l = 0; l < 4; l++ ){
+     if( comparelines(this.lines[2], olderwall.lines[l]) == true ){
+     	this.bindings[2] = 100;
+     	olderwall.bindings[l] = 100;
+     	} 
+	}
+
+	//left side binging
+	this.bindings[3] = 0;
+	 for (var l = 0; l < 4; l++ ){
+     if( comparelines(this.lines[3], olderwall.lines[l]) == true ){
+     	this.bindings[3] = 100;
+     	olderwall.bindings[l] = 100;
+     	}
+	}
+
+
+}
+this.moved = "no";
+
+}
+
+
+
+wall.prototype.act = function(x,y,w,h){
+
+}
+
+
+wall.prototype.checkcollision = function(x,y,mx,my,puck){
+//x,y surface of the circle which caused collision. mx,my center of the circle
+
+var out=[];
+
+	//if( y > this.y && y < (this.h + this.y) && x >= this.x && x <= (this.w + this.x) ){
+	if(    ( y > this.y && y < (this.h + this.y) )
+		&& ( x  > this.x && x < (this.w + this.x) )
+			){
+		
+		out.push("yes");
+
+//		console.log("checkcollision,wall.x:" + this.x + " wall.y:" + this.y + " wall.w:" + this.w + " wall.h:" + this.h);
+
+		var diffs =[];
+		//which side, top , right , bottom , left
+		topdiff_x = Math.abs(mx - (this.lines[0][0].x + (this.lines[0][1].x - this.lines[0][0].x) / 2) );
+		topdiff_y = Math.abs(my - (this.lines[0][0].y + (this.lines[0][1].y - this.lines[0][0].y) / 2 ) ) ;
+		diffs.push( Math.sqrt( Math.pow(topdiff_x,2) + Math.pow(topdiff_y,2) ) );
+
+		rigdiff_x = Math.abs(mx - (this.lines[1][0].x + (this.lines[1][1].x - this.lines[1][0].x) / 2) ) ;
+		rigdiff_y = Math.abs(my - (this.lines[1][0].y + (this.lines[1][1].y - this.lines[1][0].y) / 2) );
+		diffs.push( Math.sqrt( Math.pow(rigdiff_x,2) + Math.pow(rigdiff_y,2) ) );
+
+		botdiff_x = Math.abs(mx - (this.lines[2][1].x + (this.lines[2][0].x - this.lines[2][1].x) / 2) );
+		botdiff_y = Math.abs(my - (this.lines[2][1].y + (this.lines[2][0].y - this.lines[2][1].y) / 2) ) ;
+		diffs.push( Math.sqrt( Math.pow(botdiff_x,2) + Math.pow(botdiff_y,2) ) );
+
+		lefdiff_x = Math.abs(mx - (this.lines[3][0].x + (this.lines[3][1].x - this.lines[3][0].x) / 2) ) ;
+		lefdiff_y = Math.abs(my - (this.lines[3][0].y + (this.lines[3][1].y - this.lines[3][0].y) / 2) );
+		diffs.push( Math.sqrt( Math.pow(lefdiff_x,2) + Math.pow(lefdiff_y,2) ) );
+		
+		//nomerikomi taisaku
+		if (puck.vect1.x>0 && puck.vect1.y<0)
+		{diffs[0] = diffs[0] + 10; 
+		 diffs[1] = diffs[1] + 10;}
+		else if (puck.vect1.x>0 && puck.vect1.y>0)
+		{diffs[1] = diffs[1] + 10; 
+		 diffs[2] = diffs[2] + 10;}
+		else if (puck.vect1.x<0 && puck.vect1.y>0)
+		{diffs[2] = diffs[2] + 10; 
+		 diffs[3] = diffs[3] + 10;}
+		else if (puck.vect1.x<0 && puck.vect1.y<0)
+		{diffs[3] = diffs[3] + 10; 
+		 diffs[0] = diffs[0] + 10;}
+
+		 //bindings solution
+		 diffs[0] = diffs[0] + this.bindings[0];
+		 diffs[1] = diffs[1] + this.bindings[1];
+		 diffs[2] = diffs[2] + this.bindings[2];
+		 diffs[3] = diffs[3] + this.bindings[3];
+		
+		var kekka= Math.min(diffs[0],diffs[1],diffs[2],diffs[3]);
+	
+		if(diffs.indexOf(kekka)==0){
+			//console.log("checkcollision, collision top. kekka:" + diffs );
+			out.push({x:1,y:-1});
+			//the placer
+			out.push({x:puck.x , y:this.y - puck.rad});
+
+		} else if (diffs.indexOf(kekka)==1) {
+		  //  console.log("checkcollision, collision right. kekka:" + kekka);
+			out.push({x:-1,y:1});
+			out.push({x:this.x + this.w + (puck.rad * 1.2) , y:puck.y});
+
+		} else if (diffs.indexOf(kekka)==2) {
+		//    console.log("checkcollision, collision bottom. kekka:" + kekka);
+			out.push({x:1,y:-1});
+			out.push({x:puck.x , y:this.y + this.h +  puck.rad});
+
+		} else if (diffs.indexOf(kekka)==3) {
+		   // console.log("checkcollision, collision left. kekka:" + kekka);
+			out.push({x:-1,y:1});
+			out.push({x:this.x - (puck.rad * 1.2) ,y:puck.y});
+		}
+
+
+	}
+
+return out;
+}
+
+
+function puck(place,rad,vect1){
+	this.type = "puck";
+	this.rad = rad;
+    this.x = place.x;
+    this.y = place.y;
+    this.arrx = [];
+    this.arry = [];
+    this.vect1 = vect1;
+}
+
+puck.prototype.setvect1 = function(vct){
+	this.vect1 = vct;
+}
+
+puck.prototype.act = function(frametime){
+	this.x = this.x + (this.vect1.x * frametime);
+	this.y = this.y + (this.vect1.y * frametime);
+}
+
+puck.prototype.reborn = function(oldpuck,place,rad,vect1){
+	oldpuck.type = "puck";
+	oldpuck.rad = rad;
+    oldpuck.x = place.x;
+    oldpuck.y = place.y;
+    oldpuck.arrx = [];
+    oldpuck.arry = [];
+    oldpuck.vect1 = vect1;
+}
+
+
+
+function striker(place,rad,vect1){
+	this.type = "striker";
+	this.rad = rad;
+	this.x = place.x;
+	this.y = place.y;
+	this.vect1 = vect1;
+	this.lstx = 0;
+	this.lsty = 0;
+}
+
+striker.prototype.setvect1 = function(vct){
+	this.vect1 = vct;
+}
+
+
+striker.prototype.check_puckstrike = function(lvl) {
+
+var astriker = this;
+myx = astriker.x;
+myy = astriker.y;
+
+
+if (lvl.strikers.length==0){return "no";}
+
+if (    (myx > (lvl.uixy[0] + 2) || myx < (lvl.uixy[0] - 2) )
+     && (myy < (lvl.uixy[0] - 2) || myy > (lvl.uixy[1] + 2) )
+   ) {return "no";}
+
+
+  for(var p = 0; p< lvl.pucks.length; p++){
+
+	 var apuck = lvl.pucks[p];
+	
+	  //if(apuck.x < (myx + 10) && apuck.x > (myx - 10)  && apuck.y > (myy - 10) && apuck.y < (myy + 10) ){
+		//apuck.setvect1(new Vector(apuck.vect1.x * -1, apuck.vect1.y * -1));
+	  //}
+
+	  var xdif = apuck.x - astriker.x;
+	  var ydif = apuck.y - astriker.y;
+	  var radsum = apuck.rad + astriker.rad;
+	  var dis = Math.sqrt( Math.pow(xdif,2) + Math.pow(ydif,2) );
+	  if ( dis <= radsum ){
+
+	  	if ( Math.abs(astriker.vect1.x) < 0.6 && Math.abs(astriker.vect1.y < 0.6) ){
+	  		apuck.setvect1(new Vector(apuck.vect1.x * -1, apuck.vect1.y * -1)); //tada hanekaesu
+	  		//apuck.setvect1(new Vector(xdif * -1, ydif * -1));
+
+	  	} else {
+        var Vx = (astriker.vect1.x < 0) ? -1 : 1;
+        var Vy = (astriker.vect1.y < 0) ? -1 : 1;
+        //var Vxv = Math.min(Math.abs(astriker.vect1.x), 5) * Vx; 
+        //var Vyv = Math.min(Math.abs(astriker.vect1.y), 5) * Vy;
+        var Vxv = Math.min(Math.abs(xdif), 5) * Vx; 
+        var Vyv = Math.min(Math.abs(ydif), 5) * Vy;
+        apuck.setvect1(new Vector( Vxv , Vyv ));
+	  		
+	  	}
+
+	  	return "yes";
+	  }
+  
+
+  }
+
+}
+
+
+
+function mwall(place,w,h){
+    this.x = place.x;
+    this.y = place.y;
+    this.w = w;
+    this.h = h;
+}
+
+function hole(place,w,h){
+    this.x = place.x;
+    this.y = place.y;
+    this.w = w;
+    this.h = h;
+}
+
+
+
+
+
+function cvsDisplay(ctn,lvl){
+	this.canvas = document.createElement("canvas");
+	this.canvas.width = Math.min(400 , lvl.width);
+	//this.canvas.height = Math.min(640 , lvl.height);
+	this.canvas.height = Math.min(840 , lvl.height); //somespace in bottom
+	ctn.appendChild(this.canvas);
+	this.ctx = this.canvas.getContext("2d");
+
+	this.lvl = lvl;
+	this.animationTime=0;
+
+	//i will give to the canvas a reference to the lvl
+	this.canvas.lvl = lvl;
+	this.canvas.addEventListener('mouseenter',enter_handler);
+	this.canvas.addEventListener('touchenter',enter_handler);
+	
+	this.canvas.addEventListener('mousemove',move_handler);
+	this.canvas.addEventListener('touchmove',move_handler_t);
+
+	this.canvas.addEventListener('touchend',end_handler);
+	this.canvas.addEventListener('mouseout',end_handler);
+
+	//and a reference to the canvas to the lvl
+	this.lvl.canvas = this.canvas;
+
+}
+
+function enter_handler(event){
+
+event.preventDefault();
+
+var cvscor = event.target.getBoundingClientRect();
+	myx = event.pageX - cvscor.left;
+	myy = event.pageY - cvscor.top;
+
+ 	astriker = new striker(new Vector(myx,myy),10,new Vector(0,0));
+	event.target.lvl.strikers.push(astriker);
+	event.target.lvl.things.push(astriker);
+    //thgs.innerHTML = "strikers count" + event.target.lvl.strikers.length;
+}
+
+
+function move_handler(event){
+
+event.preventDefault();
+
+astriker = event.target.lvl.strikers[0];
+
+var cvscor = event.target.getBoundingClientRect();
+
+	myx = event.pageX - cvscor.left;
+	myy = event.pageY - cvscor.top - 30;
+
+	event.target.lvl.uixy[0] = event.pageX -  cvscor.left;
+	event.target.lvl.uixy[1] = event.pageY -  cvscor.top  - 30;
+
+	//if (event.target.lvl.strikers[0] != undefined)
+	//{
+
+  	astriker.x = myx;
+  	astriker.y = myy;
+  	astriker.vect1 = new Vector(myx - astriker.lstx, myy - astriker.lsty);
+  	astriker.lstx = myx;
+  	astriker.lsty = myy;
+  	//console.log("move_handler, moving");
+    //}
+    
+    //moved to lvl.animator
+    //check_strike_puck(astriker,event.target.lvl);
+
+//thgs.innerHTML = "strikers count" + event.target.lvl.strikers.length;
+}
+
+function move_handler_t(event){
+
+	event.preventDefault();
+
+	var cvscor = event.target.getBoundingClientRect();
+
+  var toffset = 50;
+
+	myx = event.pageX - cvscor.left;
+	myy = event.pageY - cvscor.top - toffset;
+
+	if (event.target.lvl.strikers[0] == undefined)
+	{
+	//astriker = new striker(new Vector(event.pageX,event.pageY),10,new Vector(0,0));
+	astriker = new striker(new Vector(myx , myy),10,new Vector(0,0));
+	event.target.lvl.strikers.push(astriker);
+	event.target.lvl.things.push(astriker);
+	} else {
+	astriker = event.target.lvl.strikers[0];
+	}
+
+	var t;
+    for (t=0; t < event.changedTouches.length; t++) {
+    	//myx =	event.changedTouches[t].pageX;
+    	//myy =	event.changedTouches[t].pageY - 80;
+    	myx = event.changedTouches[t].pageX - cvscor.left;
+	    myy = event.changedTouches[t].pageY - cvscor.top - toffset;
+
+      event.target.lvl.uixy[0] = event.changedTouches[t].pageX - cvscor.left;
+      event.target.lvl.uixy[1] = event.changedTouches[t].pageY - cvscor.top - toffset;
+
+    	astriker.x = myx;
+     	astriker.y = myy;
+     	astriker.vect1 = new Vector(myx - astriker.lstx, myy - astriker.lsty);
+  	    astriker.lstx = myx;
+  	    astriker.lsty = myy;
+		
+		//moved to lvl.animator
+		//check_strike_puck(astriker,event.target.lvl);
+    	}
+		
+}
+
+// function check_strike_puck(striker,lvl){
+
+// var astriker = striker;
+// myx = astriker.x;
+// myy = astriker.y;
+
+//   for(var p = 0; p< lvl.pucks.length; p++){
+
+// 	 var apuck = lvl.pucks[p];
+	
+// 	  //if(apuck.x < (myx + 10) && apuck.x > (myx - 10)  && apuck.y > (myy - 10) && apuck.y < (myy + 10) ){
+// 		//apuck.setvect1(new Vector(apuck.vect1.x * -1, apuck.vect1.y * -1));
+// 	  //}
+
+// 	  var xdif = apuck.x - astriker.x;
+// 	  var ydif = apuck.y - astriker.y;
+// 	  var radsum = apuck.rad + astriker.rad;
+// 	  var dis = Math.sqrt( Math.pow(xdif,2) + Math.pow(ydif,2) );
+// 	  if ( dis <= radsum ){
+// 	  	//apuck.setvect1(new Vector(apuck.vect1.x * -1, apuck.vect1.y * -1)); tada hanekaesu
+// 	  	//apuck.setvect1(new Vector(astriker.vect1.x, astriker.vect1.y));
+// 		thgs.innerHTML = thgs.innerHTML + ",strike";
+
+// 	  	if ( Math.abs(astriker.vect1.x) < 1.0 && Math.abs(astriker.vect1.y < 1.0) ){
+// 	  		apuck.setvect1(new Vector(apuck.vect1.x * -1, apuck.vect1.y * -1)); //tada hanekaesu
+// 	  	} else {
+// 	  		apuck.setvect1(new Vector(astriker.vect1.x, astriker.vect1.y));
+// 	  	}
+
+// 	  }
+  
+
+//   }
+
+// }
+
+
+function end_handler(event){
+	event.target.lvl.strikers = [];
+	event.target.lvl.uixy = [0,0]
+}
+
+
+
+
+cvsDisplay.prototype.drawframe = function(){
+	this.cleardisplay();
+	this.drawwalls();
+	this.drawpucks();
+	this.drawstrikers();
+
+	//this.lvl.animator();
+}
+
+
+cvsDisplay.prototype.cleardisplay = function(){
+	this.ctx.fillStyle = "GhostWhite";
+	this.ctx.fillRect(0,0,this.canvas.width,this.canvas.height);
+}
+
+
+cvsDisplay.prototype.drawwalls = function(){
+
+	//this.ctx.fillStyle = "DarkSlateGrey";
+	for (wl = 0; wl < this.lvl.walls.length; wl++){
+		 x = this.lvl.walls[wl].x;
+		 y = this.lvl.walls[wl].y;
+		 w = this.lvl.walls[wl].w;
+		 h = this.lvl.walls[wl].h;
+
+
+		 if (this.lvl.targetwalls.indexOf(wl) != -1){
+		 		this.ctx.fillStyle = "FireBrick";
+		 		this.ctx.fillRect(x,y,w,h);
+		 } else {
+				this.ctx.fillStyle = "DarkSlateGrey";
+				this.ctx.fillRect(x,y,w,h);
+
+		 }
+	}
+}
+
+cvsDisplay.prototype.drawstrikers = function(){
+
+	//this.ctx.fillStyle = "Silver"; 
+	this.ctx.fillStyle = "DarkSlateGrey";
+	for (sr = 0; sr< this.lvl.strikers.length; sr++){
+		
+		r = this.lvl.strikers[sr].rad;
+		x = this.lvl.strikers[sr].x;
+		y = this.lvl.strikers[sr].y;
+	   
+			this.ctx.beginPath();
+			this.ctx.arc(x, y, r, 0, 7);
+			this.ctx.lineTo(x, y); 
+			//this.ctx.stroke();
+			this.ctx.fill();
+
+	//console.log("drawstrikers, drawing striker at x:" + x + ",y:" + y);
+	}
+}
+
+
+cvsDisplay.prototype.drawpucks = function(){
+	//console.log("drawpucks, count of pucks:" + this.lvl.pucks.length);
+	this.ctx.fillStyle = "FireBrick";
+	//this.ctx.fillStyle = "GoldenRod"; 
+	for (pk = 0; pk< this.lvl.pucks.length; pk++){
+		
+		r = this.lvl.pucks[pk].rad;
+		x = this.lvl.pucks[pk].x;
+		y = this.lvl.pucks[pk].y;
+
+		this.lvl.pucks[pk].arrx = [];
+		this.lvl.pucks[pk].arry = [];
+
+		var radian = 0.01745;
+		var stard =0;
+	   
+			for (var d=0; d<6.29; d=d+0.0174){
+			var xp;
+			var yp;
+
+			this.ctx.beginPath();
+			this.ctx.arc(x, y, r, stard, d);
+			this.ctx.lineTo(x, y); 
+			//this.ctx.stroke();
+			this.ctx.fill();
+
+			stard = d;
+
+			xp = Math.floor(Math.cos(d) * r) + x;
+			yp = Math.floor(Math.sin(d) * r) + y;
+
+			this.lvl.pucks[pk].arrx.push(xp);
+			this.lvl.pucks[pk].arry.push(yp);
+			}
+	}
+}
+
+
+//function start(){
+//var game = new cvsDisplay(contdiv,alevel);
+//requestAnimationFrame(game.drawframe);
+//}
+
+//start();
+
+function runAnimation(frameFunc) { 
+
+	function frame(time) {  
+		
+		if(frameFunc(time)=="stop"){
+
+      var pnts2 = document.getElementById("pnts2");
+      var stbtn = document.getElementById("startbtn");
+      pnts2.innerHTML = "END<br>" +  pnts2.innerHTML.split(":")[1] + " HITS!";
+      stbtn.innerHTML = "CONTINUE"
+			//console.log("end");
+		    } else  {
+			requestAnimationFrame(frame);
+		    } 
+	} 
+
+requestAnimationFrame(frame);
+}
+
+
+var alevel = new lvl(lvlmap);
+var contdiv = document.getElementById("cont");
+
+
+function runLevel(){
+
+  var display = new cvsDisplay(contdiv,alevel);
+  var gamecounter = 0;
+  var lastAnimatedTime =0;
+  mbd = 15.5; //milliseconds before redraw, 60fps
+  //mbd = 32; // 30fps
+
+   runAnimation(function(step){
+
+		t1.innerHTML = "runLevel, t1:" + step;
+		t2.innerHTML = "runLevel, t2:" +  (step - lastAnimatedTime);
+   		gamecounter += 1;
+   		//console.log("runLevel gamecounter" + gamecounter);
+            
+            if( (step-lastAnimatedTime) > mbd ){
+
+            		display.lvl.animator(); //things places setter
+            		display.drawframe(step); //the drawing
+
+            	lastAnimatedTime = step;
+            	}
+            if(gamecounter>311){
+            	var dbg = "dbg";
+            }
+            if(gamecounter>2610){
+              display.lvl.hittarwall = 0;
+              return "stop";
+
+          
+          }
+         });
+}
+
+//runLevel();
+
+
+function startFromButton(){
+var ccont = document.getElementById("cont");
+//var pnts2 = document.getElementById("pnts2");
+ccont.innerHTML = "";
+//pnts2.innerHTML = "";
+runLevel();
+
+}
+
+
+
+//HELPER FUNCTIONS
+
+function rounder(val, d){
+	var digits = Math.pow(10,d);
+	return Math.round(val * digits) / digits; 
+}
+
+function comparelines(l1,l2){
+
+	var l1_1x = l1[0].x;
+	var l1_1y = l1[0].y;
+	var l1_2x = l1[1].x;
+	var l1_2y = l1[1].y;
+
+	var l2_1x = l2[0].x;
+	var l2_1y = l2[0].y;
+	var l2_2x = l2[1].x;
+	var l2_2y = l2[1].y;
+
+	//console.log(l1_1x + " vs " + l2_1x + "," + l1_1y + " vs " + l1_2y);
+
+	if(l1_1x == l2_1x && l1_1y == l2_1y)
+	{
+		if(l1_2x == l2_2x && l1_2y == l2_2y){
+		      return true;
+	 	}
+	} 
+
+	if(l1_1x == l2_2x && l1_1y == l2_2y)
+	{
+		if(l1_2x == l2_1x && l1_2y == l2_1y){
+		      return true;
+	 	}
+	} 
+}
+
+
+function somenumber(from, howmany, pmswitch){    
+  var pmswitch = Math.pow(pmswitch, Math.floor(Math.random() * 2) + 0);
+  return (Math.floor(Math.random() * howmany) + from) * pmswitch;
+
+}
+
+
+</script>
+
+</html>

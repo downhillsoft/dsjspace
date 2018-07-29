@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<head>
+<title>downhillsoft javascript space menu</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+
+@font-face{
+    font-family: spartan;
+    src: url('font/leaguespartan-bold.woff');
+    /* https://www.theleagueofmoveabletype.com */
+}
+
+@font-face{
+    font-family: ostrich;
+    src: url('font/ostrich-sans-rounded.woff');
+    /* https://www.theleagueofmoveabletype.com */
+}
+
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: GhostWhite; 
+    width:90vw;
+    height:50vh; 
+    font-size: 3vw;
+    /*font-size: 2vw;*/
+}
+
+
+.menucont{
+    display:flex;
+    justify-content:center;
+}
+
+.menu{
+    flex-direction: column;
+}
+
+h1 {
+    font-family: spartan;
+    color:DarkSlateGrey;
+    margin-bottom: 0px;
+}
+
+h2 {
+    font-family: ostrich;
+    margin: 0;
+}
+
+.clickable:hover {
+    color:MediumSeaGreen ;
+}
+
+/*
+@media screen and (max-width: 640px) {
+
+  h1 {
+  font-size: 2rem;
+  }
+  h2 {
+  font-size: 2rem;
+  }
+}*/
+</style>
+</head>
+<body>
+<div class="menucont">
+<div class="menu">
+<h1 class="clickable" name="webgltest">Rectangle rain</h1>
+<h2>GAME ABOUT CATCHING RECTAGLES</h2>
+<h1 class="clickable" name="bstimer">Black strawberry timer</h1>
+<h2>SIMPLE TIMER APPLICATION</h2>
+<h1 class="clickable" name="ttclimbers" >Guess the top</h1>
+<h2>SIMULATION OF TOWER CLIMBING RACE</h2>
+<h1 class="clickable" name="rectfontmkr" >Rectangled words</h1>
+<h2>CONVERT INPUT TEXT IN ANIMATED MESSAGES</h2>
+<h1 class="clickable" name="termenumerator" >Synonymerator</h1>
+<h2>ENGLISH SYNONYMS ENUMERATOR</h2>
+<h1 class="clickable" name="aht" >Crazy puck</h1>
+<h2>AIR HOCKEY LIKE GAME</h2>
+
+<h1>Tests</h1>
+<h2 class="clickable" name="evalbox" >MATHEMATICAL EXPRESSION EVALUATOR</h2>
+<h2 class="clickable" name="rect">INTERFACE TO DRAW RECTANGLES</h2>
+</div>
+</div>
+
+</body>
+
+<script>
+
+var clickables = document.getElementsByClassName('clickable');
+      
+for (var i = 0; i < clickables.length; i++) {
+  var clickable = clickables[i];
+  clickable.onclick = reload2;
+  }
+
+function reload2(e){
+  console.log("reload(" + this.getAttribute('name') + ")");
+  reload(this.getAttribute('name'));
+  }
+
+function reload(s){
+  parent.postMessage(s,"*");
+  }
+
+var menu_receiveMessage = function(event) {
+  console.log("menu.html, received event " + event.data); 
+  }
+
+addEventListener("message", menu_receiveMessage, true);
+
+</script>
+
+</html>

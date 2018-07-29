@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
+
+<style type='text/css'> 
+
+body {
+font-family: monospace; 
+font-family: 'Inconsolata', monospace;
+}
+</style>
+<script>
+var dna=["0-3","1-4","2-2","3-1","4-1","6-1","8-1"];
+
+var vertebra=function(m,x){
+    ver=""; 
+    m==0?m=1:m=m;
+    for(var i=1;i<=19;i++){
+        i==10? ver= ver + rept("I",m):ver = ver + rept("_",m);
+        }
+    var bef = rept("_",x*m) + rept("I",m) + rept("_",x*m);
+    var aft = rept("I",x*m) + rept("I",m) + rept("I",x*m);
+    return ver.replace(bef,aft);
+    }
+
+var rept=function(m,t){
+    var temp="";
+        for(var i = 0;i<t;i++){
+        temp=temp+m;
+        }
+    return temp;
+    } 
+
+var ttbuilder = function(magnitude){
+    var tt="";
+    for (var i = 0; i < dna.length; i++) { 
+    for (var j = 0; j < dna[i].split("-")[1] * magnitude; j++){
+    tt = tt + vertebra(magnitude , dna[i].split("-")[0])  + "E";
+    }}
+    return tt;
+    }
+
+function Tower(str){
+this.asString = str;
+this.asArray = str.split("");
+}
+
+Tower.prototype.modifychar = function(place,char){
+this.asArray[place]=char;
+this.asString = this.asArray.join("");
+return this.asString;
+}
+
+function Climber(placeN,charC,widthN){
+ this.char = charC;
+ this.place = placeN;
+ this.width = widthN;
+}
+
+Climber.prototype.getchar = function(){
+return this.char;
+}
+
+Climber.prototype.see = function(tower,dir){
+
+    var mn = tower.split("E")[0].length + 1;
+    
+    if (dir == "north"){
+        return tower[this.place - mn];
+    }
+        if (dir == "nwest"){
+        return tower[this.place - mn - 1];
+    }
+        if (dir == "neast"){
+        return tower[this.place - mn + 1];
+    }
+            if (dir == "west"){
+        return tower[this.place -  1];
+    }
+            if (dir == "east"){
+        return tower[this.place + 1];
+    }
+
+return;
+}
+
+Climber.prototype.movabledirs = function(tower){
+
+var dirs = [];
+
+function isNum(c){
+    if (c=="1" || c=="2" || c=="3" || c=="4"  || c=="5"  
+               || c=="6" || c=="7" || c=="8"  || c=="9"  || c=="0" )
+                  return true;}
+
+        if ( 
+            isNum(this.see(tower,"east"))==true && this.see(tower,"west")=="_"
+            || isNum(this.see(tower,"west"))==true && this.see(tower,"east")=="_")
+        {
+            dirs.push("x");
+            return dirs;
+        }
+        if (isNum(this.see(tower,"east"))==true)
+        {
+            dirs.push("w");
+            return dirs;
+        }
+        if (isNum(this.see(tower,"west"))==true)
+        {
+            dirs.push("e");
+            return dirs;
+        }
+        if (this.see(tower,"north")=="I")
+        {
+            dirs.push("n");
+        }
+        if (this.see(tower,"neast")=="I")
+        {
+            dirs.push("ne");
+        }
+        if (this.see(tower,"nwest")=="I")
+        {
+            dirs.push("nw");
+        }
+        if (isNum(this.see(tower,"east"))==true && isNum(this.see(tower,"west"))==true)
+        {
+            dirs.push("n");
+        }
+
+        return dirs;       
+}
+
+
+
+Climber.prototype.changeplace = function(towerObj,dir){
+
+    var templace = this.place;
+    var tower = towerObj.asString;
+    var mn = tower.split("E")[0].length + 1;
+    
+    if (dir == "n"){
+        this.place = this.place - mn;
+    }
+        if (dir == "nw"){
+        this.place = this.place - mn - 1;
+    }
+        if (dir == "ne"){
+        this.place = this.place - mn + 1;
+    }
+            if (dir == "w"){
+        this.place = this.place - 1;
+    }
+            if (dir == "e"){
+        this.place = this.place + 1;
+    }
+            if (dir == "x"){
+        this.place = this.place;
+    }
+
+        if(templace <= 260){
+        towerObj.modifychar(templace,"I");
+        }
+return  towerObj.modifychar(this.place,this.char);
+}
+
+function raceTurn(turns,climbers){
+var testtower = new Tower( ttbuilder(1) );
+
+document.write(testtower.asString);
+
+var closednums = ["","0","8","9","6","4"];
+
+var testClimbers = [];
+
+for(h=1; + h<=climbers;h++){
+var testClimber = new Climber((263) + (h * 2) ,closednums[h],1);
+var dirs = testClimber.movabledirs(testtower.asString);
+var mod = testClimber.changeplace(testtower,dirs[Math.floor(Math.random() * dirs.length)])
+testClimbers.push(testClimber);
+}
+
+var body = document.querySelector("body");
+//document.write(mod);
+body.innerHTML = mod.replace(/E/g,"<br>") + "<br>" + "Start!";
+//document.write("Start!");
+
+  for (i=1;i<=turns;i++){
+    var displayturner =  setTimeout(function(){
+
+         for (i2 = 0 ; i2 < testClimbers.length; i2++)
+        {
+	 var body = document.querySelector("body");
+         var  dirs = testClimbers[i2].movabledirs(testtower.asString);
+         var mod = testClimbers[i2].changeplace(testtower,dirs[Math.floor(Math.random() * dirs.length)]);
+         body.innerHTML = mod.replace(/E/g,"<br>") + "<br>" + jikkyo(mod);
+         //document.write(jikkyo(mod))
+        }
+    },3000 * i);
+  }
+}
+
+raceTurn(18,5);
+
+function jikkyo(tt){
+var jikkyolines = ["1st line.",""]
+var nsinfloor = ["0f","1f","2f","3f","4f","5f","6f","7f","8f","9f","Af","Bf"];
+ 
+var floors =  tt.split("E");
+for (var f=0; f<floors.length; f++){
+    for (var c=0; c<floors[f].length; c++){
+        if (isNum(floors[f].charAt(c))==true) {
+            nsinfloor[f] =  nsinfloor[f] + "," + floors[f].charAt(c);
+            topline = "top runs at:" + f + " floor";
+        } 
+        
+    }
+}
+
+function filllines(arr){
+
+    var i = 0;
+    var topalone=true;
+
+var speaker = function(line,nplace,flr){
+
+
+    if (flr==0){
+        return "number " + line + " is the winner!";
+    }
+    if(flr==1 &&  tt[9] != "I"){
+        return "and number " + line + " is second place";
+
+    }
+
+
+ if (nplace==0){
+        if (line.length > 1){
+            return "numbers " + line + " are leading the race";
+            topalone=false;
+        } else
+        {
+            return "number " + line + " is first place!";
+	    
+        }
+        }
+ if (nplace==1){
+        if (line.length > 1 && topalone==false){
+            return line + " are chasing the 1st place group";
+        } else if (line.length > 1 && topalone==true)
+        {
+            return line + " are chasing!";
+        }
+	  else
+	{
+	     return line + " is pursuing!";
+	}
+
+    }
+};
+
+arr.forEach(
+        function(line,c){
+            if (line.length > 2 && c != 12) {
+                jikkyolines[i] = speaker(line.substr(3),i,c);
+            i = i + 1;
+            }
+
+        });
+    
+    return;
+}
+
+
+
+filllines(nsinfloor);
+return jikkyolines[0] + "<br>" + jikkyolines[1];
+
+function isNum(c){
+    if (c=="1" || c=="2" || c=="3" || c=="4"  || c=="5"  
+               || c=="6" || c=="7" || c=="8"  || c=="9"  || c=="0" )
+                  return true;}
+
+} 
+
+
+
+</script>
+</head>
+<body></body>
+</html>

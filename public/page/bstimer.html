@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+html{
+	overflow:hidden;
+}
+
+@font-face{
+font-family: leaguegothic;
+src: url('/page/font/leaguegothic-regular-webfont.woff');
+/* https://www.theleagueofmoveabletype.com */
+}
+
+
+
+body{
+	font:15px/1.3 Arial, sans-serif;
+	color: #4f4f4f;
+	z-index:1;
+	 height:90vh; 
+	 font-family: leaguegothic;
+}
+
+#main{
+	width:370px;
+	padding:40px;
+	margin:200px auto 60px;
+	position:relative;
+}
+
+#main.light{
+	background-color:#f3f3f3;
+	color:#272e38;
+}
+
+#main div{
+	margin-top:10px;
+	text-align:center;
+}
+
+#now {
+font-size:43px;
+}
+
+input[type="number"]
+ {
+ width: 60px;
+ height: 30px;
+ font-size: 25px;
+ border: none;
+ background-color:transparent;
+ }
+
+ #aminutes{
+	text-align: right;
+	 font-family: leaguegothic;
+}
+
+
+strong{
+color:red;
+}
+
+#setalarm{
+position:absolute;
+top:6px;
+width:6%;
+}
+
+
+@media screen and (max-width: 800px) {
+
+#main{
+	/*width:370px;*/
+	padding:0px;
+/*	margin:110px auto 120px;*/
+	margin-left:auto;
+	margin-right:auto;
+	position:relative;
+	width:100vw;
+	margin:4em auto;
+	/*margin4 ue migi shita hidari*/
+	/*margin2 ueshita migihidari*/
+}
+
+	#now {
+	font-size:72px;
+	}
+
+input[type="number"]{
+ 	width: 60px;
+ 	height: 55px;
+ 	font-size: 42px;
+ 	border: none;
+ 	background-color:transparent;
+ 	}
+
+ body{
+font-family: leaguegothic;
+ 	width:100vw;
+	font-size:25px;
+	color: #4f4f4f;
+	z-index:1;
+	}
+
+	#setalarm{
+    position:absolute;
+    top:12px;
+    width:7%;
+}
+
+
+
+}
+
+
+
+
+ 
+ 
+ 
+/* TRANSITION ANIMATION SET
+--------------------------------------*/
+@-webkit-keyframes rotateStraw {
+	0% {-webkit-transform: rotate(0deg);}
+	100% {-webkit-transform: rotate(360deg);}
+}
+
+@-webkit-keyframes shakeStraw {
+	0% {-webkit-transform: rotate(0deg);}
+		20% {-webkit-transform: rotate(20deg);}
+			40% {-webkit-transform: rotate(0deg);}
+				60% {-webkit-transform: rotate(-20deg);}
+					80% {-webkit-transform: rotate(0deg);}
+	100% {-webkit-transform: rotate(0deg);}
+}
+
+@-webkit-keyframes jumpStraw {
+	 0% {-webkit-transform: translateY(1px);}
+	20% {-webkit-transform: translateY(1px);}
+	40% {-webkit-transform: translateY(0px);}
+	60% {-webkit-transform: translateY(-1px);}
+	80% {-webkit-transform: translateY(-1px);}
+   100% {-webkit-transform: translateY(0px);}
+}
+
+@-webkit-keyframes pompStraw {
+	 0% {-webkit-transform: scale(0.8);}
+	20% {-webkit-transform: scale(1.25);}
+	40% {-webkit-transform: scale(0.8);}
+	60% {-webkit-transform: scale(1.25);}
+	80% {-webkit-transform: scale(0.8);}
+   100% {-webkit-transform: scale(1.25);}
+}
+
+
+.rimg {
+	-webkit-animation-name: rotateStraw;
+	-webkit-animation-delay: 0.5s;
+	-webkit-animation-duration: 0.5s;
+	-webkit-animation-iteration-count: 2;
+}
+
+.simg {
+	-webkit-animation-name: shakeStraw;
+	-webkit-animation-delay: 0.5s;
+	-webkit-animation-duration: 0.5s;
+	-webkit-animation-iteration-count: 2;
+}
+
+.jimg {
+	-webkit-animation-name: jumpStraw;
+	-webkit-animation-delay: 0.5s;
+	-webkit-animation-duration: 0.5s;
+	-webkit-animation-iteration-count: 2;
+}
+
+.pimg {
+	-webkit-animation-name: pompStraw;
+	-webkit-animation-delay: 0.5s;
+	-webkit-animation-duration: 0.5s;
+	-webkit-animation-iteration-count: 2;
+}
+
+
+
+</style>
+<meta charset=utf-8 />
+
+<title>Black strawberry timer</title>
+</head>
+<body>
+
+<div id="main" class="light">
+  <div id="now">
+  </div>
+  <div id="control" style="position:relative;">
+	<input type="number"   id="aminutes" value = "3" onfocus="delthree()" />
+	<image id="setalarm" src="img/blackstrawberry.png" />
+  </div>
+  <div id="alarms" style="margin-top:20px;">
+  </div>
+ </div> 
+  
+<script>
+
+
+
+
+var audioElement = document.createElement('audio');
+
+var alarmtimes = [];
+var starttimes = [];
+var currmesses = [null];
+var compmesses = [null];
+
+var onehour = 1000*60*60;
+var dated = new Date();
+
+var setalarm = document.getElementById("setalarm");
+
+var delarm = function(n){
+	console.log("deletealarmNo:" + n);
+	var newat = alarmtimes;
+	var newst = starttimes;
+	var newcs = currmesses;
+	var newpm = compmesses;
+    newat.splice(n,1);
+	newst.splice(n,1);
+	newcs.splice(n,1);
+	newpm.splice(n,1);
+	alarmtimes = newat;
+	starttimes = newst;
+	currmesses = newcs;
+	compmesses = newpm;
+}
+
+var btnAnimation = function(){
+
+var anieffs = ['rimg','simg','jimg','pimg'];
+
+//0-3, so 4
+var r = Math.floor( Math.random() * 4 ) ; 
+
+//setalarm.setAttribute('class','pimg');
+setalarm.setAttribute('class',anieffs[r]);
+setTimeout(function(){setalarm.setAttribute('class',null);},1000);
+
+}
+
+
+setalarm.addEventListener("click",function(){
+  var minutes = document.getElementById("aminutes");
+  var min_val = minutes.value;
+
+  if(min_val==0 || min_val==null || min_val==undefined || min_val<0){
+  	min_val=1;
+  }
+
+  //var alarmtimet = document.getElementById("textbox1");
+  var d = new Date().getTime();
+  var n = new Date();
+  alarmtimes.push(new Date(d + (min_val*60*1000) ) );
+  starttimes.push(n); 
+  
+  var astr = alarmtimes[alarmtimes.length-1].toLocaleTimeString();
+  
+  console.log(alarmtimes);
+  alarmsetted = true;
+  
+  
+  btnAnimation();
+});
+
+
+function delthree(){
+	var m = document.getElementById("aminutes");
+	m.value="";
+}
+
+
+setInterval(function(){
+  var nowdiv = document.getElementById("now");
+  var date = new Date();
+  var timestr = date.toLocaleTimeString();
+  nowdiv.innerHTML = timestr;
+
+  var adiv = document.getElementById("alarms");
+  adiv.innerHTML="";
+  
+  for(var a=0; a<alarmtimes.length; a++){	
+	var span = document.createElement("div");
+	
+	if(compmesses[a] != null){
+	span.innerHTML = compmesses[a]
+	+ "\t<image onclick=delarm(" + a + ") src='img/del.png' ></image>";
+	}
+	else{
+		if(currmesses[a] != undefined){
+		span.innerHTML = currmesses[a] 
+		+ "\t<image onclick=delarm(" + a + ") src='img/del.png'></image>";
+		}
+	}
+	
+	adiv.appendChild(span);
+  
+  if (alarmtimes[a].toLocaleTimeString() == date.toLocaleTimeString())
+  {
+	compmesses[a] = starttimes[a].toLocaleTimeString() + " - " + alarmtimes[a].toLocaleTimeString() 
+				+ " ( " +  Math.round( (alarmtimes[a].getTime() - starttimes[a].getTime()) / 1000 / 60 ) + " Minutes. )" ;
+	}
+
+		else{
+		//currmesses[a] = "<strong>" +  Math.round( (alarmtimes[a].getTime() - date.getTime()) / 1000 / 60 )
+		//                + "</strong> MIN. TO " + alarmtimes[a].toLocaleTimeString();
+
+		currmesses[a] = "<strong>" +   Math.round( (alarmtimes[a].getTime() - date.getTime()) / 1000 / 60 )
+		                + "</strong> Minutes to " + alarmtimes[a].toLocaleTimeString();
+		
+		}
+  }
+
+},1000);
+  
+  
+if('serviceWorker' in navigator){
+	window.addEventListener('load', function(){
+		navigator.serviceWorker.register('/bstimersw.js').then(function(registration){
+			console.log('bstimersw.js registration successful with scope' , registration.scope);
+
+		},function(err){console.log('registration error', err);});
+		
+
+});
+}
+
+
+
+</script>
+  
+</body>
+</html>

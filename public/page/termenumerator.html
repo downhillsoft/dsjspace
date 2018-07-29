@@ -1,0 +1,250 @@
+ <!DOCTYPE html>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+ <head>
+ 	<style>
+
+    @font-face{
+    font-family: ostrich;
+    src: url('font/ostrich-sans-rounded.woff');
+    /* https://www.theleagueofmoveabletype.com */
+    }
+
+ 		#thelink::selection {
+    background-color: white;
+    }
+
+ 		#thelink:focus {
+    outline: 0;
+    border-color: white;
+    }
+
+    #main{
+     position:relative;
+     max-width: 400px;
+     min-height: 1000px;
+     margin:4em auto;
+    }
+
+    #itxt{
+     margin-left:auto;
+     margin-right:auto;
+     font-family:ostrich;
+    }
+
+    #ibtn{
+     font-family:ostrich;
+    }
+
+    #controlp{
+     margin-top:10px;
+     margin-bottom:10px;
+    }
+
+    #inputpanel2{
+     visibility: collapse;
+     height:0px;
+    }
+
+
+    body {
+    font-family: monospace; 
+    }
+
+    button{
+    width:60px;
+    height:20px;
+    font-size: 12px;
+    background: none;
+    border: none;
+    display: inline;
+    margin: 0;
+    padding: 0;
+    outline: none;
+    outline-offset: 0;
+    /* Additional styles to look like a link */
+    color: black;
+    cursor: pointer;
+    text-decoration: underline;
+    text-align: left;
+    }
+
+
+ 	</style>
+ </head>
+
+ <body>
+
+ <div id="main">
+
+ <div id="inputpanel">
+ <input type="text" id="itxt"/>
+ </div>
+
+ <div id="inputpanel2" oninput="runsyn()">
+ <input type="text" id="itxt2" style="width:60vw;"/>
+ </div>
+
+ <div id="controlp">
+ <span><button id="ibtn" onclick="enumeratesyns()">display synonyms</button></span>
+ </div>
+
+ <input type="text" id="thelink"  style="width:100px;border:none;color:white;"  spellcheck="false"/><br>
+
+ <iframe id="preview"
+    title="preview"
+    width="400px"
+    height="2000px"
+    frameborder="0"
+    scrolling="yes"
+    marginheight="0"
+    marginwidth="0"
+    src="">
+ </iframe>
+
+ </div>
+
+ </body>
+
+
+ <script>
+
+//var capAl= ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","A","B","C","D","E","F","G","H","I"];
+var capAl= ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","1","2","3","4","5","6","7","8","9","0","A","B","C","D","E","F","G","H","I"];
+var thestring="";
+//var rnd=1;
+
+var ttype = getParameterValueByName("ttype");
+
+
+
+function getParameterValueByName( name ){
+  name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+  
+  addhref = decodeURIComponent(window.location.href );
+
+  var regexS = "[\\?&]"+name+"=([^&#]*)";
+ 
+  var regex = new RegExp( regexS );
+  //var results = regex.exec( window.location.href );
+  var results = regex.exec(addhref);
+
+  if( results == null )
+    return "";
+  else
+    return results[1];
+    //return decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+
+
+
+function runsyn(){
+  console.log("runsyn()");
+}
+
+
+
+
+
+function enumeratesyns(){
+
+var ipt = document.getElementById("itxt").value;
+    ipt = termenumerate(ipt);
+
+}
+
+
+
+function termenumerate(word){
+
+if(ttype==""){
+ttype = "synonym";
+}
+
+console.log("termenumerator.html ," + ttype + " , termenumerate('" + word + "'')" );
+
+var out ="";
+
+var urlstr = 'http://api.wordnik.com/api/word.json/' + word + '/relatedWords?api_key=e795b34cb5f70d244e00106bd97058d6756fc00b3405637e0';
+var urlstr = 'https://api.wordnik.com/api/word.json/' + word + '/relatedWords?api_key=e795b34cb5f70d244e00106bd97058d6756fc00b3405637e0';
+// get your own key, it is easy.
+
+fetch(urlstr, {
+
+  method: 'get'
+}).then(function(response) {
+
+return response.json();
+  
+}).then(function(json){
+
+var syno = json.filter(function(item){
+ // if (item.relationshipType == "synonym")
+     if (item.relationshipType == ttype)
+    return item;
+  });
+
+return syno[0];
+
+}).then(function(synos){
+
+var concat="";
+synos.words.forEach(function(item){
+concat = concat + "," + item;      
+});
+console.log(concat);
+out = concat;
+document.getElementById("itxt2").value = out;
+//createlink(document.getElementById("itxt2").value);
+
+//////function generateString(ipt){    
+
+var link =  "=" + out + "&magnitu=0.1&rnd=0";
+
+//link = encodeURI(link);
+link = encodeURIComponent(link);
+
+
+// link = "http://127.0.0.1:8887/page/rectfont.html?rectify" + link;
+link = "https://downhillsoftjspace.firebaseapp.com/page/rectfont.html?rectify" + link;
+
+console.log(link);
+
+// document.getElementById("thelinkdiv").innerHTML =
+//  '<a class="training" href="' + link + '"  target="_blank">' + link + '</a><br>';
+// document.getElementById("thelink").value = link;
+document.getElementById("preview").src = link;
+
+///////}
+
+
+}).catch(function(err) {
+  // Error :
+  if(err.message.slice(0,11)=="Cannot read"){
+  document.getElementById("itxt2").value = "Cannot read error"
+  var err = "sorry.error,not found";
+  var link =  "=" + err + "&magnitu=0.1&rnd=0";
+  link = "https://downhillsoftjspace.firebaseapp.com/page/rectfont.html?rectify" + link;
+  document.getElementById("preview").src = link;
+} else if (err.message.slice(0,15)=="Failed to fetch") {
+document.getElementById("itxt2").value = "Failed to fetch"
+ var err = "sorry.error,no response";
+var link =  "=" + err + "&magnitu=0.1&rnd=0";
+ link = "https://downhillsoftjspace.firebaseapp.com/page/rectfont.html?rectify" +  link;
+ document.getElementById("preview").src = link;
+    };
+});
+
+return out;
+}
+
+
+
+
+
+
+
+
+
+ </script>
+ </html>

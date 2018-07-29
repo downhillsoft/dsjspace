@@ -1,0 +1,101 @@
+<html>
+<title>clicktomoveandcatchdrag</title>
+
+<head>
+
+<style>
+#theContainer {
+  height: 550px;
+}
+
+#draggableO{
+  position: relative;
+  left: 50px;
+  top: 50px;
+  transition: left .5s cubic-bezier(.42,-0.3,.78,1.25), 
+        top .5s cubic-bezier(.42,-0.3,.78,1.25);
+
+  width: 100px;
+  height: 100px;
+  background: black;
+  -moz-border-radius: 50px;
+  -webkit-border-radius: 50px;
+  border-radius: 50px;
+}
+</style>
+
+
+<script type="text/javascript">
+//<![CDATA[
+  function sampleAOnDragStart( event ){
+     event.dataTransfer.setData( "Text", event.target.id );
+};
+var countA = 0;
+function sampleACountUp() {
+     document.getElementById( "outputText" ).innerHTML = ++countA;
+}
+//]]>
+</script>
+</head>
+
+<body>
+
+<div id="theContainer">
+    <div alt="the thing" draggable="true" height="67" id="draggableO" ondrag="sampleACountUp( event );" ondragstart="sampleAOnDragStart( event );" width="67">
+</div>
+</div>
+<script type="text/javascript">
+    
+//<![CDATA[
+var cirCle = document.querySelector("#draggableO");
+var container = document.querySelector("#theContainer");
+ 
+container.addEventListener("click", getClickPosition, false);
+ 
+function getClickPosition(e) {
+    var parentPosition = getPosition(e.currentTarget);
+    var xPosition = e.clientX - parentPosition.x - (cirCle.clientWidth / 2);
+    var yPosition = e.clientY - parentPosition.y - (cirCle.clientHeight / 2);
+     
+    cirCle.style.left = xPosition + "px";
+    cirCle.style.top = yPosition + "px";
+}
+ 
+
+function getPosition(el) {
+  var xPos = 0;
+  var yPos = 0;
+ 
+  while (el) {
+    if (el.tagName == "BODY") {
+      // deal with browser quirks with body/window/document and page scroll
+      var xScroll = el.scrollLeft || document.documentElement.scrollLeft;
+      var yScroll = el.scrollTop || document.documentElement.scrollTop;
+ 
+      xPos += (el.offsetLeft - xScroll + el.clientLeft);
+      yPos += (el.offsetTop - yScroll + el.clientTop);
+    } else {
+      // for all other non-BODY elements
+      xPos += (el.offsetLeft - el.scrollLeft + el.clientLeft);
+      yPos += (el.offsetTop - el.scrollTop + el.clientTop);
+    }
+ 
+    el = el.offsetParent;
+  }
+  return {
+    x: xPos,
+    y: yPos
+  };
+}
+
+//]]>
+</script>
+
+    <span id="outputText" style="margin-left: 10px;">0</span>
+ 
+
+
+
+
+</body>
+</html>   

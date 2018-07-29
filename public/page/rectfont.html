@@ -1,0 +1,459 @@
+﻿ <!DOCTYPE html>
+   <!--  <meta name="viewport" content="width=device-width, initial-scale=1"> -->
+ <head>
+
+   <style type='text/css'> 
+
+@font-face{
+font-family: ostrich;
+src: url('font/ostrich-sans-rounded.woff');
+}
+
+body 
+{
+  font-family: ostrich; 
+  height:90vh; 
+}
+
+#tryitlnk{
+font-family: ostrich; 
+  
+}
+
+
+</style>
+
+ </head>
+
+ <body>
+
+
+<div id="inputpanel"><input type="text" id="addcode" style="width:60vw;"/>
+<button onclick="addchars()">rectify string</button></div><br>
+
+
+
+<div id="cancon" style="position:absolute;">
+
+</div>
+<div id="tryitdiv" style="position:relative;visibility:hidden">
+<small>
+
+<!--  <a href="http://127.0.0.1:8887/page/rectfontmkr.html"  style="color:#0000FF;text-align:center;text-decoration:none">TRY IT</a> -->
+  <a href="https://downhillsoftjspace.firebaseapp.com/page/rectfontmkr.html" id="tryitlnk" style="color:#0000FF;text-align:center;text-decoration:none">TRY IT</a>
+</small>
+</div>
+
+ <div style="visibility:collapse;"><input type="text" id="fullcode" style="width:300px"/>
+<button onclick="runrect()">run</button></div>
+<script src="code/quak.js"></script>
+
+ <script>
+
+//var capAl= ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
+var capAl= ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","1","2","3","4","5","6","7","8","9","0","A","B","C","D","E","F","G","H","I"];
+var rectAl=[
+//A
+//"<B,25,969,0,<B,125,19,0,<B,125,969,0>><B,125,19,684>>", //20180322
+"<B,0,0,0, <B,0,19,0,<B,25,950,19,<B,150,19,570>>> <B,25,0,0,<B,200,19,0,<B,100,570,94,<B,100,380,645>>>> >",
+"<B,100,969,0,<B,75,19,0,<B,75,19,19,<B,50,19,69,<B,75,323,69,<B,50,19,398,<B,75,19,94,<B,125,19,169,<B,75,19,69,<B,50,38,69,<B,75,418,88,<B,50,19,493,<B,75,19,94,<B,75,19,169>>>>>>>>>>>>>>",
+"<B,0,19,0,<B,100,931,19,<B,225,19,2456,<B,75,152,69>><B,225,19,1006,<B,75,171,759>>>>",
+"<B,100,969,0,<B,75,19,0,<B,75,19,19,<B,50,19,69,<B,75,855,69,<B,50,19,930,<B,75,19,94,<B,75,19,169>>>>>>>>",
+"<B,125,969,0,<B,75,19,0,<B,75,171,0>><B,150,19,418><B,75,19,950,<B,75,152,-133>>>",
+"<B,125,969,0,<B,75,19,0,<B,75,171,0>><B,150,19,418>>",
+"<B,100,969,0,<B,75,19,0,<B,75,19,19,<B,50,19,69,<B,75,114,69>>>><B,75,19,950,<B,75,19,-19,<B,50,19,-69,<B,75,494,-544,<B,50,19,-163>>>>>>",
+"<B,100,969,0,<B,75,19,399,<B,100,969,-399>>>",
+"<B,275,19,0,<B,125,931,219,<B,275,19,1131>>>",
+"<B,0,684,0,<B,100,266,684,<B,225,19,341,<B,100,931,-1006,<B,125,19,-144>>>>>",
+"<B,100,969,0,<B,100,38,399,<B,50,76,-101,<B,50,171,-196,<B,50,152,-177>>><B,100,190,88,<B,100,342,265>>>>",
+"<B,125,969,0,<B,25,19,0><B,75,19,950,<B,75,152,-133>>>",
+"<B,25,969,0,<B,25,228,0,<B,25,608,0,<B,25,380,209,<B,25,190,190,<B,75,380,240,<B,25,380,-380,<B,25,209,-209,<B,75,969,0>>>>>>>>>",
+"<B,25,969,0,<B,50,19,0,<B,100,494,0,<B,100,475,569,<B,50,19,456,<B,25,969,-950>>>>>>",
+//"<B,25,969,0,<B,50,19,0,<B,100,228,0,<B,100,380,303,<B,100,361,455,<B,25,19,342,<B,25,969,-950>>>>>>>", //20180310
+"<B,100,969,0,<B,75,19,0,<B,100,969,0>><B,75,19,950>>",
+"<B,100,969,0,<B,75,19,0,<B,75,19,19,<B,50,19,69,<B,75,399,69,<B,50,19,474,<B,75,19,94,<B,125,19,169>>>>>>>>",
+"<B,100,969,0,<B,75,19,0,<B,100,969,0>><B,75,19,950,<B,25,171,-221>>>",
+"<B,100,969,0,<B,75,19,0,<B,75,19,19,<B,50,19,69,<B,75,399,69,<B,50,19,474,<B,75,19,94,<B,125,19,169,<B,75,19,69,<B,50,38,69,<B,75,399,88>>>>>>>>>>>",
+"<B,0,19,0,<B,100,437,19,<B,225,19,-94,<B,75,152,69>><B,75,38,418,<B,25,57,0,<B,50,19,19><B,75,475,38,<B,225,19,725,<B,75,266,-541>>>>>>>",
+"<B,50,171,0,<B,25,19,0,<B,125,969,0,<B,25,19,0,<B,50,171,0>>>>>",
+"<B,100,950,0,<B,225,19,1025,<B,100,950,-1025>>>",
+"<B,100,228,0,<B,100,380,303,<B,100,361,455,<B,25,19,342,<B,50,361,-342,<B,50,380,-405,<B,50,228,-253>>>>>>>",
+"<B,75,969,0,<B,25,209,760,<B,25,399,-399,<B,75,361,-361,<B,75,171,411,<B,50,190,221,<B,50,247,215,<B,25,969,-722>>>>>>>>>",
+"<B,100,209,0,<B,100,247,259,<B,25,285,372,<B,25,228,335>><B,100,285,272,<B,25,247,-247,<B,25,209,-209>><B,100,228,335>>>>",
+"<B,125,646,0,<B,100,323,696><B,150,19,627,<B,25,627,-652>>>",
+"<B,75,152,0,<B,50,19,0,<B,100,456,0,<B,50,209,0><B,100,513,631,<B,50,228,891><B,50,19,494,<B,75,171,-152>>>>>>",
+
+
+//1
+"<B,0,0,0, <B,250,0,0,<B,0,19,0,<B,25,437,19>>> <B,225,0,0,<B,0,38,0,<B,25,399,38>>>  <B,200,0,0,<B,0,57,0,<B,25,361,57>>><B,250,0,0,<B,0,475,0,<B,25,456,475>>> <B,225,0,0,<B,0,494,0,<B,25,418,494>>>  <B,200,0,0,<B,0,513,0,<B,25,380,513>>> >",
+//2
+"<B,0,0,0, <B,25,0,0,<B,0,0,0,<B,225,19,0>>> <B,50,0,0,<B,0,19,0,<B,175,19,19>>>  <B,70,0,0,<B,0,38,0,<B,125,19,38>>>   <B,250,0,0,<B,0,19,0,<B,25,437,19>>> <B,225,0,0,<B,0,38,0,<B,25,399,38>>>  <B,200,0,0,<B,0,57,0,<B,25,361,57>>>   <B,50,0,0,<B,0,437,0,<B,175,19,437>>> <B,25,0,0,<B,0,456,0,<B,225,19,456>>>  <B,50,0,0,<B,0,475,0,<B,175,19,475>>>   <B,0,0,0,<B,0,475,0,<B,25,456,475>>> <B,25,0,0,<B,0,494,0,<B,25,418,494>>>  <B,50,0,0,<B,0,513,0,<B,25,380,513>>>   <B,50,0,0,<B,0,912,0,<B,175,19,912>>> <B,25,0,0,<B,0,931,0,<B,225,19,931>>>  <B,0,0,0,<B,0,950,0,<B,275,19,950>>> >",
+//3
+"<B,0,0,0, <B,25,0,0,<B,0,0,0,<B,225,19,0>>> <B,50,0,0,<B,0,19,0,<B,175,19,19>>>  <B,70,0,0,<B,0,38,0,<B,125,19,38>>>   <B,250,0,0,<B,0,19,0,<B,25,437,19>>> <B,225,0,0,<B,0,38,0,<B,25,399,38>>>  <B,200,0,0,<B,0,57,0,<B,25,361,57>>>   <B,50,0,0,<B,0,437,0,<B,175,19,437>>> <B,25,0,0,<B,0,456,0,<B,225,19,456>>>  <B,50,0,0,<B,0,475,0,<B,175,19,475>>>   <B,250,0,0,<B,0,475,0,<B,25,456,475>>> <B,225,0,0,<B,0,494,0,<B,25,418,494>>>  <B,200,0,0,<B,0,513,0,<B,25,380,513>>>   <B,50,0,0,<B,0,912,0,<B,175,19,912>>> <B,25,0,0,<B,0,931,0,<B,225,19,931>>>  <B,0,0,0,<B,0,950,0,<B,275,19,950>>>  >",
+//4
+"<B,0,0,0, <B,0,0,0,<B,0,19,0,<B,25,437,19>>> <B,25,0,0,<B,0,38,0,<B,25,399,38>>>  <B,50,0,0,<B,0,57,0,<B,19,361,57>>>   <B,250,0,0,<B,0,19,0,<B,25,437,19>>> <B,225,0,0,<B,0,38,0,<B,25,399,38>>>  <B,200,0,0,<B,0,57,0,<B,25,361,57>>>   <B,50,0,0,<B,0,437,0,<B,175,19,437>>> <B,25,0,0,<B,0,456,0,<B,225,19,456>>>  <B,50,0,0,<B,0,475,0,<B,175,19,475>>>   <B,250,0,0,<B,0,475,0,<B,25,456,475>>> <B,225,0,0,<B,0,494,0,<B,25,418,494>>>  <B,200,0,0,<B,0,513,0,<B,25,380,513>>>  >",
+//5
+"<B,0,0,0, <B,25,0,0,<B,0,0,0,<B,225,19,0>>> <B,50,0,0,<B,0,19,0,<B,175,19,19>>>  <B,70,0,0,<B,0,38,0,<B,125,19,38>>>   <B,0,0,0,<B,0,19,0,<B,25,437,19>>> <B,25,0,0,<B,0,38,0,<B,25,399,38>>>  <B,50,0,0,<B,0,57,0,<B,19,361,57>>>   <B,50,0,0,<B,0,437,0,<B,175,19,437>>> <B,25,0,0,<B,0,456,0,<B,225,19,456>>>  <B,50,0,0,<B,0,475,0,<B,175,19,475>>>   <B,250,0,0,<B,0,475,0,<B,25,456,475>>> <B,225,0,0,<B,0,494,0,<B,25,418,494>>>  <B,200,0,0,<B,0,513,0,<B,25,380,513>>>   <B,50,0,0,<B,0,912,0,<B,175,19,912>>> <B,25,0,0,<B,0,931,0,<B,225,19,931>>>  <B,0,0,0,<B,0,950,0,<B,275,19,950>>>  > ",
+//6
+"<B,0,0,0, <B,25,0,0,<B,0,0,0,<B,225,19,0>>> <B,50,0,0,<B,0,19,0,<B,175,19,19>>>  <B,70,0,0,<B,0,38,0,<B,125,19,38>>>   <B,0,0,0,<B,0,19,0,<B,25,437,19>>> <B,25,0,0,<B,0,38,0,<B,25,399,38>>>  <B,50,0,0,<B,0,57,0,<B,19,361,57>>>   <B,50,0,0,<B,0,437,0,<B,175,19,437>>> <B,25,0,0,<B,0,456,0,<B,225,19,456>>>  <B,50,0,0,<B,0,475,0,<B,175,19,475>>>   <B,0,0,0,<B,0,475,0,<B,25,456,475>>> <B,25,0,0,<B,0,494,0,<B,25,418,494>>>  <B,50,0,0,<B,0,513,0,<B,25,380,513>>>   <B,250,0,0,<B,0,475,0,<B,25,456,475>>> <B,225,0,0,<B,0,494,0,<B,25,418,494>>>  <B,200,0,0,<B,0,513,0,<B,25,380,513>>>   <B,50,0,0,<B,0,912,0,<B,175,19,912>>> <B,25,0,0,<B,0,931,0,<B,225,19,931>>>  <B,0,0,0,<B,0,950,0,<B,275,19,950>>>   >",
+//7
+"<B,0,0,0, <B,25,0,0,<B,0,0,0,<B,225,19,0>>> <B,50,0,0,<B,0,19,0,<B,175,19,19>>>  <B,70,0,0,<B,0,38,0,<B,125,19,38>>>    <B,250,0,0,<B,0,19,0,<B,25,437,19>>> <B,225,0,0,<B,0,38,0,<B,25,399,38>>>  <B,200,0,0,<B,0,57,0,<B,25,361,57>>>   <B,250,0,0,<B,0,475,0,<B,25,456,475>>> <B,225,0,0,<B,0,494,0,<B,25,418,494>>>  <B,200,0,0,<B,0,513,0,<B,25,380,513>>>   >",
+//8
+"<B,0,0,0, <B,25,0,0,<B,0,0,0,<B,225,19,0>>> <B,50,0,0,<B,0,19,0,<B,175,19,19>>>  <B,70,0,0,<B,0,38,0,<B,125,19,38>>>    <B,0,0,0,<B,0,19,0,<B,25,437,19>>> <B,25,0,0,<B,0,38,0,<B,25,399,38>>>  <B,50,0,0,<B,0,57,0,<B,19,361,57>>>   <B,250,0,0,<B,0,19,0,<B,25,437,19>>> <B,225,0,0,<B,0,38,0,<B,25,399,38>>>  <B,200,0,0,<B,0,57,0,<B,25,361,57>>>    <B,50,0,0,<B,0,437,0,<B,175,19,437>>> <B,25,0,0,<B,0,456,0,<B,225,19,456>>>  <B,50,0,0,<B,0,475,0,<B,175,19,475>>>   <B,0,0,0,<B,0,475,0,<B,25,456,475>>> <B,25,0,0,<B,0,494,0,<B,25,418,494>>>  <B,50,0,0,<B,0,513,0,<B,25,380,513>>>   <B,250,0,0,<B,0,475,0,<B,25,456,475>>> <B,225,0,0,<B,0,494,0,<B,25,418,494>>>  <B,200,0,0,<B,0,513,0,<B,25,380,513>>>   <B,50,0,0,<B,0,912,0,<B,175,19,912>>> <B,25,0,0,<B,0,931,0,<B,225,19,931>>>  <B,0,0,0,<B,0,950,0,<B,275,19,950>>>   >",
+//9
+"<B,0,0,0, <B,25,0,0,<B,0,0,0,<B,225,19,0>>> <B,50,0,0,<B,0,19,0,<B,175,19,19>>>  <B,70,0,0,<B,0,38,0,<B,125,19,38>>>   <B,0,0,0,<B,0,19,0,<B,25,437,19>>> <B,25,0,0,<B,0,38,0,<B,25,399,38>>>  <B,50,0,0,<B,0,57,0,<B,19,361,57>>>    <B,250,0,0,<B,0,19,0,<B,25,437,19>>> <B,225,0,0,<B,0,38,0,<B,25,399,38>>>  <B,200,0,0,<B,0,57,0,<B,25,361,57>>>    <B,50,0,0,<B,0,437,0,<B,175,19,437>>> <B,25,0,0,<B,0,456,0,<B,225,19,456>>>  <B,50,0,0,<B,0,475,0,<B,175,19,475>>>    <B,250,0,0,<B,0,475,0,<B,25,456,475>>> <B,225,0,0,<B,0,494,0,<B,25,418,494>>>  <B,200,0,0,<B,0,513,0,<B,25,380,513>>>   <B,50,0,0,<B,0,912,0,<B,175,19,912>>> <B,25,0,0,<B,0,931,0,<B,225,19,931>>>  <B,0,0,0,<B,0,950,0,<B,275,19,950>>>   >",
+//0
+"<B,0,0,0, <B,25,0,0,<B,0,0,0,<B,225,19,0>>> <B,50,0,0,<B,0,19,0,<B,175,19,19>>>  <B,70,0,0,<B,0,38,0,<B,125,19,38>>>   <B,0,0,0,<B,0,19,0,<B,25,437,19>>> <B,25,0,0,<B,0,38,0,<B,25,399,38>>>  <B,50,0,0,<B,0,57,0,<B,19,361,57>>>    <B,250,0,0,<B,0,19,0,<B,25,437,19>>> <B,225,0,0,<B,0,38,0,<B,25,399,38>>>  <B,200,0,0,<B,0,57,0,<B,25,361,57>>>   <B,0,0,0,<B,0,475,0,<B,25,456,475>>> <B,25,0,0,<B,0,494,0,<B,25,418,494>>>  <B,50,0,0,<B,0,513,0,<B,25,380,513>>>   <B,250,0,0,<B,0,475,0,<B,25,456,475>>> <B,225,0,0,<B,0,494,0,<B,25,418,494>>>  <B,200,0,0,<B,0,513,0,<B,25,380,513>>>    <B,50,0,0,<B,0,912,0,<B,175,19,912>>> <B,25,0,0,<B,0,931,0,<B,225,19,931>>>  <B,0,0,0,<B,0,950,0,<B,275,19,950>>>   >",
+
+
+//A again
+//"<B,25,969,0,<B,125,19,0,<B,125,969,0>><B,125,19,684>>", //20180322
+"<B,0,0,0, <B,0,19,0,<B,25,950,19,<B,150,19,570>>> <B,25,0,0,<B,200,19,0,<B,100,570,94,<B,100,380,645>>>> >",
+"<B,100,969,0,<B,75,19,0,<B,75,19,19,<B,50,19,69,<B,75,323,69,<B,50,19,398,<B,75,19,94,<B,125,19,169,<B,75,19,69,<B,50,38,69,<B,75,418,88,<B,50,19,493,<B,75,19,94,<B,75,19,169>>>>>>>>>>>>>>",
+"<B,0,19,0,<B,100,931,19,<B,225,19,2456,<B,75,152,69>><B,225,19,1006,<B,75,171,759>>>>",
+"<B,100,969,0,<B,75,19,0,<B,75,19,19,<B,50,19,69,<B,75,855,69,<B,50,19,930,<B,75,19,94,<B,75,19,169>>>>>>>>",
+"<B,125,969,0,<B,75,19,0,<B,75,171,0>><B,150,19,418><B,75,19,950,<B,75,152,-133>>>",
+"<B,125,969,0,<B,75,19,0,<B,75,171,0>><B,150,19,418>>",
+"<B,100,969,0,<B,75,19,0,<B,75,19,19,<B,50,19,69,<B,75,114,69>>>><B,75,19,950,<B,75,19,-19,<B,50,19,-69,<B,75,494,-544,<B,50,19,-163>>>>>>",
+"<B,100,969,0,<B,75,19,399,<B,100,969,-399>>>",
+"<B,275,19,0,<B,125,931,219,<B,275,19,1131>>>",
+
+
+"<B,0,0,0>"
+];
+
+var charcount = 0;
+var linecount = 1;
+var lastdivtop = 0;
+var strokes = [];
+
+ var dfltcanW_ini = 300;
+ var dfltcanH_ini = 988;
+ var magnitude = 0.3;
+ //var magnitude = 0.1;
+ //var magnitude = 0.05; 
+ dfltcanW =  dfltcanW_ini * magnitude;
+ dfltcanH =  dfltcanH_ini * magnitude;
+
+var iptxt = document.getElementById("addcode");
+
+iptxt.addEventListener("focus",function(){
+this.value="";
+});
+
+
+var rnd = getParameterValueByName("rnd");
+
+var maghosei = 1;
+
+
+var newmag =  getParameterValueByName("magnitu");
+if (newmag ==""){
+} else {
+ magnitude = newmag * 1 * maghosei; 
+ dfltcanW =  dfltcanW_ini * magnitude;
+ dfltcanH =  dfltcanH_ini * magnitude;  
+}
+
+var feeluck = getParameterValueByName("flk");
+
+
+
+var inistr =  getParameterValueByName("rectify");
+if (inistr==""){
+
+}
+else{
+var ippnl = document.getElementById("inputpanel");
+ippnl.style = "visibility:hidden;";
+var ippnlstyleIE = document.getElementById("inputpanel").style;
+ippnlstyleIE.visibility = "hidden";
+//console.log("row after hiding panel");
+iptxt.value = inistr;
+addchars();    
+}
+
+
+
+
+
+
+
+
+function getParameterValueByName( name ){
+  name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+  
+  addhref = decodeURIComponent(window.location.href );
+
+  var regexS = "[\\?&]"+name+"=([^&#]*)";
+ 
+  var regex = new RegExp( regexS );
+  //var results = regex.exec( window.location.href );
+  var results = regex.exec(addhref);
+
+  if( results == null )
+    return "";
+  else
+    return results[1];
+    //return decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+
+
+
+function addchars(){
+
+var thestring = document.getElementById('addcode').value;
+var pause=0;
+
+function myindexOf(arr,tar){
+ if(arr.lastIndexOf(tar)==-1){
+   console.log("tar " + tar + " is not here"); 
+ return  45;//35 ;//26;
+ 
+   } else {return arr.lastIndexOf(tar); // - rnd); 
+     } }
+
+for (var i =0; i<thestring.length; i++){
+
+console.log("thestring.length " + thestring.length + ", the string " + thestring);
+
+charcount = charcount + 1;  
+
+var tarch = thestring.charAt(i);
+//var rectcode = rectAl[myindexOf(capAl,tarch.toUpperCase())];
+if(myindexOf(capAl,tarch.toUpperCase()) != 45){
+var rectcode = rectAl[myindexOf(capAl,tarch.toUpperCase()) - rnd];
+}else{
+var rectcode = rectAl[45];
+}
+
+var strokecount = rectcode.split('<').length;
+strokes.push(strokecount);
+
+console.log("addchars() " + tarch + ":" + rectcode);
+
+var addcharArgs =[];
+addcharArgs.push(null); //[0]
+addcharArgs.push(charcount); //[1]
+
+
+
+if(tarch==','){
+      addcharArgs.push(rectcode);
+      addcharArgs.push("newline");
+     setTimeout(exec_addchar.bind(null,addcharArgs),(charcount * 100 + pause));
+  }
+
+ else if (tarch=='.'){
+    var rectcode = rectAl[1]; //the B , because it is long
+     addcharArgs.push(rectcode);
+     addcharArgs.push("cpause");
+     var maxstroke = Math.max.apply(null,strokes) - 1;
+     console.log("cpause," + maxstroke);
+     pause = pause + 900  + (maxstroke*100);
+     setTimeout(exec_addchar.bind(null,addcharArgs),(charcount * 100 + pause));
+  } 
+ else
+    {
+    //addchar(rectcode);
+    console.log("a normal char");
+    addcharArgs.push(rectcode);
+    setTimeout(exec_addchar.bind(null,addcharArgs),(charcount * 100 + pause));
+     }
+//end of for
+}
+
+
+function exec_addchar(args){
+    console.log("exec_addchar:" + args[2] + "charcount:" + args[1]);
+    addchar(args[2],args);
+}
+
+
+
+
+console.log("main loop in 'addchars' ends");
+
+
+//show the TRY IT
+var maxstroke = Math.max.apply(null,strokes);
+//var aftertimer = maxstroke * 100 + (5000); 
+var aftertimer = maxstroke * 100  * linecount + (500 * charcount) ; 
+//console.log("after timer " + aftertimer);
+var aftertimer =  500 * charcount; 
+
+setTimeout(function(){
+    var tiv = document.getElementById("tryitdiv");
+    var divtop = linecount * dfltcanH + 60; 
+    var divtop = lastdivtop + (1 * dfltcanH) + 60;
+    tiv.style.top= divtop + "px";
+    tiv.style.visibility = "visible"; //MAKE TRY IT VISIBLE
+    },aftertimer)
+
+//add chars
+}
+
+
+function escapeCase(casetype){
+
+ var cancon = document.getElementById('cancon');
+ 
+ if (casetype=="newline"){
+     var br = document.createElement("br");
+    var cancon = document.getElementById("cancon");
+    cancon.appendChild(br);
+    }
+  else if(casetype =="cpause"){
+        // for (var c=1 ; c <= cancon.children.length; c++){
+        //      var tremove  = document.getElementById('can' + c);
+        //      cancon.removeChild(tremove);
+        //     }
+        while(cancon.firstChild){
+        cancon.removeChild(cancon.firstChild)
+            }
+  }
+
+}
+
+
+
+function clearCanvas(){
+    //var maxstroke = Math.max.apply(null,strokes); //you dont know about maxstrokes 
+    var aftertimer =  (charcount * 110) + 500;
+    //var aftertimer = 1000;
+    console.log("clearAfter " + aftertimer); 
+
+
+    setTimeout(function(){
+      console.log("clearing canvas");
+        var cancon = document.getElementById('cancon');
+
+            while(cancon.firstChild){
+                cancon.removeChild(cancon.firstChild)
+            }
+
+        }
+
+     ,aftertimer);
+}
+
+
+
+
+function addchar(rectcode,args){ //[null,canvasid,rectcode,escapecase]
+
+//if(clearcanv == "yes") clearCanvas();
+if(args[3]!=null){console.log("addchar(),escapecase:" + args[3]);
+    escapeCase(args[3]);return;}
+
+var cancon = document.getElementById('cancon');
+    var newcan = document.createElement('canvas'); 
+    //var newid  = "can" + (charcount + 1);
+    var newid  = "can" + args[1];
+    newcan.id  = newid;  
+    newcan.height = dfltcanH;       
+    newcan.width  = dfltcanW;
+    newcan.top = 0;
+    //newcan.top =  linetop * dfltcanH;
+//    newcan.left = lineleft * dfltcanW;     
+    cancon.appendChild(newcan);
+
+    //charcount = charcount + 1; //toaddchars()
+    lastdivtop = newcan.style.top;
+    lastdivtop = newcan.offsetTop;
+   
+    var cx = document.getElementById(newid).getContext('2d');
+    //cx.fillStyle = "lightgrey";
+    cx.fillStyle = "white";		
+    cx.fillRect(0,0,dfltcanW,dfltcanH);
+
+
+
+    runrect(newid,rectcode);
+
+}
+
+
+
+
+function runrect(canvasid,rectcode){
+
+var got = Quak.eXecute(rectcode,1);
+
+console.log("runrect:" + got)
+
+simpledrawer(got,canvasid);
+}
+
+//var timetofinish = 0; the maximum rnct of all
+
+
+
+
+function simpledrawer(arr,canvasid){
+
+var cx=document.getElementById(canvasid).getContext("2d");
+var rcnt = arr.length;
+var curr = 0;
+
+    var done = function(){
+        //cx.fillStyle="black";
+
+        if (feeluck=="yes"){
+
+          cx.fillStyle = rainbow(6 * (Math.floor(Math.random() * 6) + 1), (Math.floor(Math.random() * 6) + 1));  
+        } else {
+          cx.fillStyle="black";
+
+        }
+
+        var to = arr[curr].split(",")[0] * magnitude;
+        var le = arr[curr].split(",")[1] * magnitude;
+        var wi = arr[curr].split(",")[2] * magnitude;
+        var he = arr[curr].split(",")[3] * magnitude;
+                cx.fillRect(to,le,wi,he);
+                curr = curr + 1;
+                if(curr == rcnt){return;} else {setTimeout(done,100);}
+    }
+
+    setTimeout(done,100);
+}
+
+
+function rainbow(numOfSteps, step) {
+    // This function generates vibrant, "evenly spaced" colours (i.e. no clustering). This is ideal for creating easily distinguishable vibrant markers in Google Maps and other apps.
+    // Adam Cole, 2011-Sept-14
+    // HSV to RBG adapted from: http://mjijackson.com/2008/02/rgb-to-hsl-and-rgb-to-hsv-color-model-conversion-algorithms-in-javascript
+    var r, g, b;
+    var h = step / numOfSteps;
+    var i = ~~(h * 6);
+    var f = h * 6 - i;
+    var q = 1 - f;
+    switch(i % 6){
+        case 0: r = 1; g = f; b = 0; break;
+        case 1: r = q; g = 1; b = 0; break;
+        case 2: r = 0; g = 1; b = f; break;
+        case 3: r = 0; g = q; b = 1; break;
+        case 4: r = f; g = 0; b = 1; break;
+        case 5: r = 1; g = 0; b = q; break;
+    }
+    var c = "#" + ("00" + (~ ~(r * 255)).toString(16)).slice(-2) + ("00" + (~ ~(g * 255)).toString(16)).slice(-2) + ("00" + (~ ~(b * 255)).toString(16)).slice(-2);
+    return (c);
+}
+
+// for (var i =0 ; i < 1000; i++){
+// console.log("<div style='background-color:" + rainbow(6 * (Math.floor(Math.random() * 6) + 1),
+//     (Math.floor(Math.random() * 6) + 1)   
+// //    10
+// ) + ";>some color</div><br>"    );
+// }
+
+
+
+
+		
+
+  </script>
+  </body>
+  </html>
