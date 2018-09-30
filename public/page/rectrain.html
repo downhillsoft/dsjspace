@@ -1,5 +1,13 @@
+<!DOCTYPE html>
 
 <style>
+
+@font-face{
+    font-family: ostrich;
+    src: url('font/ostrich-sans-rounded.woff');
+    /* https://www.theleagueofmoveabletype.com */
+}
+
 #body {
     text-align : center;
     vertical-align : middle;
@@ -9,13 +17,16 @@
     width: 100%;
 }
 
+#scrbrd {
+    font-family: ostrich;
+}
+
 button {
   display : block;
   font-size : inherit;
   margin : auto;
   padding : 0.6em;
 }
-
 
 canvas {
   display : block;
@@ -30,44 +41,45 @@ canvas {
   z-index: 0;
 }
 
-
-
 .ripple_effect{
     /* background: black; */
     background-color: rgb(25, 25, 25);
-    /* 任意 */
     width: 100px;
     height: 100px;
-
-    /* 必須 */
     position: absolute;
     border-radius: 100%;
     pointer-events: none;
     opacity: 1;
-  animation-name: rippleani;
-  animation-duration: 1s;
-  z-index:1;
+    animation-name: rippleani;
+    animation-duration: 1s;
+    z-index:1;
 }
+
 @keyframes rippleani {
-    /* 必須 */
+
     from {
         opacity: 1;
-    }
-    to {
-        transform: scale(2);
-        opacity: 0;
-        background: transparent;
-    }
+      } 
+        to {
+          transform: scale(2);
+          opacity: 0;
+          background: transparent;
+          }
 }
+
 </style>
 
-<div id ="body">
-<!-- Learn about this code on MDN: https://developer.mozilla.org/en-US/docs/Learn/WebGL/By_example/Raining_rectangles -->
 
+<div id ="body">
+<!-- QUOTE FROM MDN: https://developer.mozilla.org/en-US/docs/Learn/WebGL/By_example/Raining_rectangles -->
+
+<div id="scrbrd">
 <p>hits:
-<strong>0</strong> misses:
+<strong>0</strong>  misses:
 <strong>0</strong></p>
-<canvas>Your browser does not seem to support HTML5 canvas.</canvas>
+</div>
+
+<canvas>Your browser does not seem to support HTML5 canvas</canvas>
 
 <div id="thediv"></div>
 
@@ -77,23 +89,21 @@ var d = document.getElementById("thediv");
 d.addEventListener("click",showeffect);
 
 function showeffect(e){
-    
- console.log("x:" + e.pageX + ",y:" + e.pageY);
+   //console.log("x:" + e.pageX + ",y:" + e.pageY);
 
    var eff = document.createElement('div');
    eff.className = 'ripple_effect';
 
-
    eff.style.left = e.pageX + "px";
    eff.style.top = e.pageY + "px" ;
 
-      document.getElementsByTagName('body')[0].appendChild(eff);
+   document.getElementsByTagName('body')[0].appendChild(eff);
 
    var rmv = function(){
-    eff.parentNode.removeChild(eff);
-  } 
-  setTimeout(rmv, 1000);
- 
+   eff.parentNode.removeChild(eff);
+   } 
+   
+   setTimeout(rmv, 1000); 
 }
 
 
@@ -105,7 +115,13 @@ var gl,
   timer,
   rainingRect,
   scoreDisplay,
-  missesDisplay;
+  missesDisplay,
+  scoreBoarddiv;
+var score = 0,
+    misses = 0;
+var vecoffset = 0;
+var stopflag = 0;
+
 
 function setupAnimation (evt) {
   window.removeEventListener(evt.type, setupAnimation, false);
@@ -120,44 +136,43 @@ function setupAnimation (evt) {
   var displays = document.querySelectorAll("strong");
   scoreDisplay = displays[0];
   missesDisplay = displays[1];
+  scoreBoarddiv = document.getElementById("scrbrd");
 }
 
-    var score = 0,
-        misses = 0;
-    var vecoffset =0;
-    var stopflag = 0;
 
     
 function drawAnimation () {
 
 	vecoffset = vecoffset + 0.005;
 
-	if (misses == 30){
+	if (misses == 39){
 	    stopflag = 1;
+        scoreBoarddiv.innerHTML = "RAIN IS OVER";
 	}
 	
   gl.scissor(rainingRect.position[0], rainingRect.position[1],
       rainingRect.size[0] , rainingRect.size[1]);
   gl.clear(gl.COLOR_BUFFER_BIT);
   rainingRect.position[1] -= rainingRect.velocity + vecoffset;
+
   if (rainingRect.position[1] < 0) {
     misses += 1;
     missesDisplay.innerHTML = misses;
     rainingRect = new Rectangle();
-  }
-// We are using setTimeout for animation. So we reschedule
-// the timeout to call drawAnimation again in 17ms.
+    }
+
+    // We are using setTimeout for animation. So we reschedule
+    // the timeout to call drawAnimation again in 17ms.
 	// Otherwise we won't get any animation.
-	if (stopflag == 0)
-	{
-	    timer = setTimeout(drawAnimation, 17);
+  if (stopflag == 0) {
+	timer = setTimeout(drawAnimation, 17);
 	}
 }
 
 function playerClick (evt) {
   // We need to transform the position of the click event from
   // window coordinates to relative position inside the canvas.
-// In addition we need to remember that vertical position in
+  // In addition we need to remember that vertical position in
   // WebGL increases from bottom to top, unlike in the browser
   // window.
   var position = [
@@ -194,7 +209,7 @@ function Rectangle () {
     randNums[2]*(gl.drawingBufferWidth - rect.size[0]),
     gl.drawingBufferHeight
   ];
-  rect.velocity = 1.0 + 6.0*Math.random();
+  rect.velocity = 1.0 + 6.0 * Math.random();
   rect.color = getRandomVector();
   // gl.clearColor(rect.color[0], rect.color[1], rect.color[2], 1.0);
    // gl.clearColor(0.0, 0.0, 0.0, 1.0);
@@ -230,3 +245,4 @@ function getRenderingContext() {
 
 </div>
 
+</html>
