@@ -1,0 +1,281 @@
+<!doctype html>
+<meta charset="UTF-8">
+    <canvas id="cnv" width="160" height="110"></canvas>
+    <div><input type = "button" value="reproduce" onclick="reproduce()"></div>
+    <script src="code/quak.js"></script>
+    <script>
+    
+    var strtm = Date.now();
+    console.log("start Date.now()=" + strtm);
+    var cnv = document.getElementById("cnv");
+    var cx = cnv.getContext("2d");
+    cx.fillStyle = "lightgrey";
+    cx.fillRect(0,0,cnv.width,cnv.height);
+    
+    cx.canvas.addEventListener("mousedown", mdown);
+    
+    var strokes = [];
+    strokes.push(null); //1 based
+    //var curstrk ;
+    var currentdrawingstroke = 0;
+    var writestrokescounter = 0; //for debug
+
+
+function reproduce(){
+    var strtm = Date.now();
+//cx.clearRect(0, 0, cnv.width, cnv.height);
+
+cx.fillStyle = "lightgrey";
+cx.fillRect(0,0,cnv.width, cnv.height);
+
+writestrokescounter = 0;
+currentdrawingstroke = 1;
+writestrokes("A");
+
+}
+
+
+function writestrokes(mode){
+
+writestrokescounter = writestrokescounter + 1;
+
+//console.log("current strokes count:" + (strokes.length - 1) );
+
+for (var s = 1; s < strokes.length ; s++){
+
+        if (mode == "B"){
+            if (currentdrawingstroke == s)  writestroke(strokes[s].qB); //B=qB 
+        } else { //mode "A"
+            writestroke(strokes[s].qA); 
+        }
+    }   
+}
+
+function writestroke(str){
+    var myarr = getquakarr(str);
+    //console.log("send to quak" + str);
+
+}
+
+function getquakarr(str){
+    var got = Quak.eXecute(str,1);
+        //console.log("getquakarr:" + got)
+
+        simpledrawer(got,"cnv");
+}
+
+
+
+function simpledrawer(arr,canvasid){
+
+var magnitude = 1;
+//var cx=document.getElementById(canvasid).getContext("2d");
+cx.fillStyle="black";
+var rcnt = arr.length;
+var curr = 0;
+var lag = 0;
+
+    var done = function(){
+        //cx.fillStyle="black";
+
+        var to = arr[curr].split(",")[0] * magnitude;
+        var le = arr[curr].split(",")[1] * magnitude;
+        var wi = arr[curr].split(",")[2] * magnitude;
+        var he = arr[curr].split(",")[3] * magnitude;
+        var lag2 = arr[curr].split(",")[4].slice(1); 
+
+        lag2 = parseInt(lag2,16);
+        if (lag2 > 10000){
+            lag2 = lag2 - strtm ;
+        } if (lag2 == 'NaN'){
+            lag2=0;
+        }
+
+        //console.log("lag is " + lag2 + " milliseconds in decimals");
+
+                cx.fillRect(to,le,wi,he);
+                curr = curr + 1;
+                if(curr == rcnt){return;} else {setTimeout(done,lag2);}
+    }
+
+    setTimeout(done,lag);
+}
+
+
+
+    
+    function mmove(ev,str){
+    
+        thecnvrect = ev.target.getBoundingClientRect();
+        //console.log("mmove on canvas, X:" + (ev.clientX - thecnvrect.left) + ",Y:" + (ev.clientY - thecnvrect.top) );
+    
+        var adrag = Object.create(null);
+            //adrag.px = ev.pageX;
+            //adrag.py = ev.pageY;
+            adrag.px = ev.clientX - thecnvrect.left;
+            adrag.py = ev.clientY - thecnvrect.top;
+            
+            adrag.time = Date.now();
+    
+                if (str.drags.length == 1){
+                    //console.log("first of strokes[" + strokes.length + "]" ); 
+                    str.drags.push(adrag);
+                    str.qcompreA = "A|X" + adrag.px + ";Y" + adrag.py + ";T" + adrag.time.toString(16) + "|";
+                    str.qcompreB = "B|X" + adrag.px + ";Y" + adrag.py + "|";
+                } else {
+                    var lastpx = str.drags[str.drags.length - 1].px;
+                    var lastpy = str.drags[str.drags.length - 1].py;
+                    var d = kokud(lastpx,adrag.px,lastpy,adrag.py);
+                    if (d=='')
+                        return; //nomove
+                    var tempsr =  d +  (adrag.time - str.drags[str.drags.length-1].time).toString(16)   + ";";
+                    str.qcompreA = str.qcompreA + tempsr;
+                    str.qcompreB = str.qcompreB + d
+
+                    str.drags.push(adrag);
+                }
+
+            str.qB = traductf(str.qcompreB);
+            str.qA = traductf(str.qcompreA);
+           
+            writestrokes("B");
+    }
+
+
+
+
+
+    function kokud(lx,cx,ly,cy){
+        if(ly ==cy && lx < cx ) return '0';
+        if(ly < cy && lx < cx ) return '1';
+        if(ly < cy && lx ==cx ) return '2';
+        if(ly < cy && lx > cx ) return '3';
+        if(ly ==cy && lx > cx ) return '4';
+        if(ly > cy && lx > cx ) return '5';
+        if(ly > cy && lx ==cx ) return '6';
+        if(ly > cy && lx < cx ) return '7';
+        return '';
+    }
+    
+    function mdown(ev){
+
+     currentdrawingstroke  = currentdrawingstroke  + 1;
+
+     mystrk = Object.create(null);
+                    mystrk.starttime = Date.now().toString();
+                    mystrk.drags = [];
+                    mystrk.drags.push(null);
+                    mystrk.quakstr = "";
+                    mystrk.qcompreA = "";
+                    mystrk.qcompreB = "";
+                    mystrk.qA = "";
+                    mystrk.qB = "";
+                    strokes.push(mystrk);
+    
+             if (ev.which == 1) {
+
+                thecnvrect = ev.target.getBoundingClientRect();
+                //console.log("mdown on canvas, X:" + (ev.clientX - thecnvrect.left) + ",Y:" + (ev.clientY - thecnvrect.top) );
+    
+                //ev.preventDefault();
+    
+                cx.canvas.addEventListener("mouseup", function(ev) {
+                     //console.log("mousemove removed");
+                     cx.canvas.removeEventListener("mousemove",namedf,true); 
+                   }
+                  ,true);
+    
+                  cx.canvas.addEventListener("mousemove", namedf,true); 
+                }
+    
+                function namedf(ev){
+                    mmove(ev,mystrk);
+                } 
+    }
+    
+    
+
+//TRADUCTOR
+//var tA =  "A|X60;Y34;T3490|1245;176;1FGH;10";
+//var tB = "B|X60;Y34|00";
+//console.log(traductf(tA));
+
+function traductf(str){
+
+    var sheader = qheadr(str);
+    var schildr = qchiln(str);
+
+    //return sheader;
+    return sheader.replace("CHILDREN", schildr);
+
+ function qheadr(cstr){
+    var styp = cstr.split("|")[0];
+    var hstr = cstr.split("|")[1];
+    //var tmpl = "<B,X,0,0,<B,0,Y,0,<BT,1,1,Y,CHILDREN>>>";
+    var tmpl = "<BT,X,0,0,<BT,0,Y,0,<B20,1,1,Y,CHILDREN>>>"; //todebug
+    hstr = hstr + ";";
+    var x = hstr.split(";")[0].slice(1);
+    var y = hstr.split(";")[1].slice(1);
+    var t = hstr.split(";")[2].slice(1);
+    
+    if (t==0) {
+        var stop = "stop";
+    }
+
+    //return tmpl.replace("X",x).replace("Y",y).replace("T",t).replace("Y",y); //SHOULD NOT BE ABCDEF
+    return tmpl.replace("X",x).replace("Y",y).replace("T",t).replace("Y",y).replace("T",t); //SHOULD NOT BE ABCDEF
+ 
+ }
+
+
+ function qchiln(cstr){
+    var t = cstr.split("|")[0];
+    if (t=="A") return qchilnA(cstr.split("|")[2]);
+    if (t=="B") return qchilnB(cstr.split("|")[2]);
+
+}
+
+function qchilnA(cstr){
+    var cstrs = cstr.split(";")
+    var mxidx = cstrs.length - 1;
+    var curst = "";
+    var templ = "";
+    for (var i = mxidx ; i != 0 ; i--){
+        if (i==mxidx) {
+            templ = "<BT,1,1,R>";
+        } else {
+            templ = "<BT,1,1,R,CHILDREN>";
+        }
+
+        if(cstrs[i].slice(1) == "0")  //checking the element
+        var stop = "stop";
+        
+        curst = templ.replace("T",cstrs[i].slice(1)).replace("R",cstrs[i].slice(0,1)).replace("CHILDREN",curst);
+    }
+    return curst;
+}
+
+function qchilnB(cstr){
+
+    var mxidx = cstr.length;
+    var curst = "";
+    var templ = "";
+    for (var i = mxidx ; i != 0 ; i--){
+        if (i==mxidx) {
+            templ = "<B,1,1,R>";
+        } else {
+            templ = "<B,1,1,R,CHILDREN>";
+        }
+        
+        curst = templ.replace("R",cstr.slice(i-1,i)).replace("CHILDREN",curst);
+    }
+    return curst;
+}
+
+}
+//TRADUCTOR END
+
+
+    
+    </script>
+    </html>
