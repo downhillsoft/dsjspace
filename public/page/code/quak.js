@@ -1,6 +1,6 @@
 
 ////////////////////////
-///QUAK CORE 20180211///
+///QUAK CORE 20181002///
 ////////////////////////
 
 var Quak = (function(){
@@ -9,7 +9,8 @@ var Quak = (function(){
             rExer: rExer,
             rPser: rPser,
           eXecute : function(code,place){
-                   return rExer(rPser(code,place));
+                    var o = rPser(code,place);
+                    return rExer(o);
                    }
             };
 
@@ -33,7 +34,8 @@ function innerExer(mot,cnum){
     //arect(mot.args[1]*1,mot.args[2]*1,mot.args[3]*1,mot);
     //enable clone, a clone can not have children
 
-    if (mot.args[0]=="B"){
+    //if (mot.args[0]=="B"){
+    if (mot.args[0].charAt(0) == "B") {
     arect(mot.args[1]*1,mot.args[2]*1,mot.args[3]*1,mot);
     }else if (mot.args[0].slice(0,2)=="CL"){
         var howmany = mot.args[0].slice(2);
@@ -190,14 +192,15 @@ var c = place;
 // var code = "<BO,20,20,0,<BO,15,15,0,<BO,1,1,0>>>";
 // var code = "<BO,20,20,0,<BO,15,15,0,<BO,3,3,0>><BO,10,10,0,<BO,12,12,5>>>";
 //var code1 = "<BO,20,20,0>";
-//var code2 = "<BO,20,20,0,<BO,20,20,0>>";
+//var code2 = "<B,20,20,0,<B,20,20,0>>";
 //var code3 = "<BO,20,20,0,<BO,10,10,0,<CL1>><CL1>>";
-//var code4 = "<BO,20,20,0,<BO,10,10,0,<BO,3,3,0>><CL2><CL1>>";
+//var code4 = "<B123,20,20,0,<B99999,10,10,0,<B09,3,3,0>><CL2><CL1>>";
 //////////////
-// var out = rPser(code,1);
+// var out = rPser(code2,1);
 // var got = rExer(out);
 // var stop = "stop";
-//20180121
+//20181002
+//var code4 = "<B123,20,20,0,<B99999,10,10,0,<B09,3,3,0>><CL2><CL1>>";
 //var got = Quak.eXecute(code4,1);
 //var stop = "stop";
 // //////////
