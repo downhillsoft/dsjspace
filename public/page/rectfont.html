@@ -46,7 +46,7 @@ font-family: ostrich;
 
  <div style="visibility:collapse;"><input type="text" id="fullcode" style="width:300px"/>
 <button onclick="runrect()">run</button></div>
-<script src="code/quak.js"></script>
+<script src="code/rectile.js"></script>
 
  <script>
 
@@ -379,7 +379,7 @@ var cancon = document.getElementById('cancon');
 
 function runrect(canvasid,rectcode){
 
-var got = Quak.eXecute(rectcode,1);
+var got = Rectile.eXecute(rectcode,1);
 
 console.log("runrect:" + got)
 

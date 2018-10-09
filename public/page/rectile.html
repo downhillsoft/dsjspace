@@ -2,7 +2,7 @@
 <meta charset="UTF-8">
     <canvas id="cnv" width="160" height="110"></canvas>
     <div><input type = "button" value="PLAYBACK" onclick="playback()"></div>
-    <script src="code/quak.js"></script>
+    <script src="code/rectile.js"></script>
     <script>
     
     var strtm = Date.now();
@@ -52,14 +52,14 @@ for (var s = 1; s < strokes.length ; s++){
 }
 
 function writestroke(str){
-    var myarr = getquakarr(str);
-    //console.log("send to quak" + str);
+    var myarr = getrectilearr(str);
+    //console.log("send to rectile" + str);
 
 }
 
-function getquakarr(str){
-    var got = Quak.eXecute(str,1);
-        //console.log("getquakarr:" + got)
+function getrectilearr(str){
+    var got = Rectile.eXecute(str,1);
+        //console.log("getrectilearr:" + got)
 
         simpledrawer(got,"cnv");
 }
@@ -165,7 +165,7 @@ var lag = 0;
                     mystrk.starttime = Date.now().toString();
                     mystrk.drags = [];
                     mystrk.drags.push(null);
-                    mystrk.quakstr = "";
+                    mystrk.rectilestr = "";
                     mystrk.qcompreA = "";
                     mystrk.qcompreB = "";
                     mystrk.qA = "";

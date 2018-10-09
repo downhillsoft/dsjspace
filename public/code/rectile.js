@@ -1,10 +1,10 @@
 
-////////////////////////
-///QUAK CORE 20181002///
-////////////////////////
+///////////////////////////
+///RECTILE CORE 20181008///
+///////////////////////////
 
-var Quak = (function(){
-//(function Quak(){
+var Rectile = (function(){
+//(function Rectile(){
     return {
             rExer: rExer,
             rPser: rPser,
@@ -17,7 +17,7 @@ var Quak = (function(){
 
 
 
-//QUAK INNER FUNCTIONS  rExer , rPser
+//RECTILE INNER FUNCTIONS  rExer , rPser
 
 function rExer(mot){
 
@@ -183,7 +183,7 @@ var c = place;
 }
 
 
-//Quak
+//RECTILE
 })()
 
 
@@ -201,6 +201,6 @@ var c = place;
 // var stop = "stop";
 //20181002
 //var code4 = "<B123,20,20,0,<B99999,10,10,0,<B09,3,3,0>><CL2><CL1>>";
-//var got = Quak.eXecute(code4,1);
+//var got = Rectile.eXecute(code4,1);
 //var stop = "stop";
 // //////////

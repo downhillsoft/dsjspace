@@ -17,7 +17,7 @@
  <div style="visibility:collapse;"><input type="text" id="fullcode" style="width:300px"/>
 <button onclick="runrect()">run</button></div>
 
-<script src="code/quak.js"></script>
+<script src="code/rectile.js"></script>
  <script>
  var cx = document.querySelector("canvas").getContext('2d');
 cx.fillStyle="lightgrey";	
@@ -48,7 +48,7 @@ console.log(box.value);
 var code = box.value;
 //var out = rPser(code,1);
 //var got = rExer(out);
-var got = Quak.eXecute(code,1);
+var got = Rectile.eXecute(code,1);
 simpledrawer(got);
 }
 
