@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<style>
+
+@font-face{
+    font-family: Damion;
+    src: url('font/Damion-Regular.woff');
+}
+
+@font-face{
+    font-family: Goudy;
+    src: url('font/goudy_bookletter_1911-webfont.woff');
+}
+
+.fcon {
+    max-width: 270px;
+    max-height: 300px;
+
+}
+
+.f1 {
+    width : 260px ;
+    height : 420px ;
+    transform-origin: 150px 50px; 
+    transform : scale(0.6) rotate(0.01turn);
+}
+
+.f2 {
+    width : 260px ;
+    height : 420px ;
+    transform-origin: 150px 50px; 
+    transform : scale(0.6) rotate(-0.01turn);
+}
+
+#fest {
+    font-family: Damion;
+    font-size:1.5em; 
+    margin-left : 8px;
+}
+
+#fost {
+    font-family: Goudy;
+    font-size:0.7em;
+    max-width : 480px;
+    margin-left : 8px;
+}
+
+.aspa1 {
+    height: 20px;
+    }
+
+.aspa2 {
+    height: 5px;
+    }
+
+#flows {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+body {
+    max-width:1220px;
+}
+
+</style>
+
+<body>
+<div class="aspa1"></div>
+<div id="fest">downhillsoft personal website</div>
+<div class="aspa2"></div>
+<div id="fost">Working in Japan as SE, mostly on businees applications on MS platforms. 
+    The following were created for fun, using HTML, Javascript and avoiding third party libraries. 
+    I have also released some apps on MS Store. For more information, check blog. contact: downhillsoft@gmail.com</div>
+<div class="aspa1"></div>
+
+<div id="flows">
+
+<div class="fcon">
+<!-- <iframe id="if" src="/page/rectile.html">
+  <p>Your browser does not support iframes.</p>
+</iframe></div>-->
+</div>
+</body>
+
+<script>
+
+    function appendf(pname){
+        var container = document.getElementById("flows");
+        container.appendChild(anf(pname));
+    }
+
+    function anf(pname){
+        var f = document.createElement("iframe");
+
+        
+        var s = Math.floor(Math.random() * 2) + 1 ; 
+        if (s==1){f.className = "f1";}   
+            else {f.className = "f2";}
+            //f.src = "/page/" + pname ; //termenumerator.html";
+            f.src =  pname ; //termenumerator.html";
+        var con = document.createElement("div");
+            con.className = "fcon";
+            con.appendChild(f); 
+        return con;
+    }
+
+    function appendfs(){
+        var pages = ["snakepit.html"
+                    ,"rectrain.html"
+                    ,"bstimer.html"
+                    ,"ttclimbers.html"
+                    ,"bwmap.html"
+                    ,"rectfont.html?rectify%3DKHOOR%2CL%20DP%20D%2CSURJUDP%26magnitu%3D0.1%26rnd%3D3"
+                    ,"aht.html"];
+        for (p = 0; p < pages.length; p++){
+
+            appendf(pages[p]);
+        }
+    };
+
+    appendfs();
+
+</script>
+</html>

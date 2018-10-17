@@ -10,8 +10,12 @@ var Rectile = (function(){
             rPser: rPser,
           eXecute : function(code,place){
                     var o = rPser(code,place);
-                    return rExer(o);
-                   }
+                    if (o == undefined){
+                        console.log("Rectile.js parse error.")
+                        } else {
+                        return rExer(o);
+                        }
+                    }
             };
 
 
