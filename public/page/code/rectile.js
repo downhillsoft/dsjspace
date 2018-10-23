@@ -1,7 +1,6 @@
 
-///////////////////////////
-///RECTILE CORE 20181008///
-///////////////////////////
+//Rectile 20181023
+
 
 var Rectile = (function(){
 //(function Rectile(){

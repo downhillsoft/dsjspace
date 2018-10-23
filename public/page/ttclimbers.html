@@ -8,6 +8,8 @@
 body {
 font-family: monospace; 
 font-family: 'Inconsolata', monospace;
+text-align : center;
+vertical-align : middle;
 }
 </style>
 <script>
@@ -236,11 +238,11 @@ var speaker = function(line,nplace,flr){
 
  if (nplace==0){
         if (line.length > 1){
-            return "numbers " + line + " are leading the race";
+            return "" + line + " are leading the race";
             topalone=false;
         } else
         {
-            return "number " + line + " is first place!";
+            return "" + line + " is first place!";
 	    
         }
         }

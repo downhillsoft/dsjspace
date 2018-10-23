@@ -19,6 +19,10 @@ button {
     font-size: 100%;
     width: 200px;
     margin-top:5px;
+
+    border: none;
+    background-color:black;
+    color: white;
 }
 
 #main {
@@ -27,6 +31,18 @@ button {
     justify-content: center; 
     align-items: center; 
     min-height: 400px;
+}
+
+.linkdi {
+    font-size: 50%;
+    width: 200px;
+
+}
+
+#cnv {
+    border-style: solid;	
+    border-width: 1px;
+
 }
 
 </style>
@@ -38,6 +54,8 @@ button {
 <div><canvas id="cnv" width="220" height="220"></canvas></div>
 <div class="btndiv"><button onclick="playback()">Playback drawing</button></div>
 <div class="btndiv"><button onclick="newcanvs()">Start new canvas</button></div>
+<div class="btndiv"><button onclick="displayLink()" id="dlbtn">Display link for a friend</button></div>
+<div class="linkdi"></div>
 </div>
 </body>
 
@@ -52,31 +70,153 @@ button {
     var currentdrawingstroke ;
     var cnv ;
     var cx ;
+    var bottled = "";
 
-    //console.log("start Date.now()=" + strtm);
     newcanvs();
 
+
+
+var potstr =  getParameterValueByName("bottled");
+
+
+if (potstr==""){
+                //nothing
+            }  else {
+                strokes = [];
+                strokes.push(null); //1 based
+        var temparr =   potstr.split("~");
+
+        for (var s = 1; s < temparr.length; s++){
+            tempob = Object.create(null);
+            tempob.qA = traductf(temparr[s]);
+            strokes.push(tempob);
+        }
+
+        writestrokes("A");
+
+    }
+
+
+var countdown = 10;
+var plac = document.getElementsByClassName("linkdi")[0];
+var thbn = document.getElementById("dlbtn");
+
+function displayerMess(mess){
+
+    thbn.innerHTML = mess;
+
+    function clearmess(){
+        thbn.innerHTML = 'Display link for a friend';
+    }
+
+    setTimeout(clearmess,3500);
+}
+
+
+function displayLink(){
+
+curl = window.location.href;
+curl = curl.split("?")[0];
+
+if (bottled == ""){
+    displayerMess("Please draw and playback to display a link to it");
+    return;
+    }
+
+link = curl + "?bottled=" + bottled;
+plac.innerHTML = '<a class="training" href="' + link + '"  target="_blank">' + link + '</a><br>';
+
+countdown = 10;
+linkDisplayed();
+
+}
+
+
+
+function linkDisplayed(){
+
+    if (countdown == 0) {
+        thbn.innerHTML = 'Display link for a friend';
+        plac.innerHTML = '';
+        return;
+    }
+
+    countdown = countdown - 1;
+
+
+    thbn.innerHTML = 'Link created, clearing in ' + countdown + ' seconds..';
+
+    setTimeout(linkDisplayed,1000);
+
+}
+
+
+function getParameterValueByName( name ){
+  name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+  
+  addhref = decodeURIComponent(window.location.href );
+
+  var regexS = "[\\?&]"+name+"=([^&#]*)";
+ 
+  var regex = new RegExp( regexS );
+  //var results = regex.exec( window.location.href );
+  var results = regex.exec(addhref);
+
+  if( results == null )
+    return "";
+  else
+    return results[1];
+    //return decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+
+function cleancvs(){
+
+    cnv = document.getElementById("cnv");
+    cx = cnv.getContext("2d");
+    //cx.fillStyle = "lightgrey";
+    cx.fillStyle = "white";
+    cx.fillRect(0,0,cnv.width,cnv.height);
+
+}
+
+
 function newcanvs(){
+  
+    cleancvs();
+
     strtm = Date.now();
     strokes = [];
     currentdrawingstroke = 0;
-    cnv = document.getElementById("cnv");
-    cx = cnv.getContext("2d");
-    cx.fillStyle = "lightgrey";
-    cx.fillRect(0,0,cnv.width,cnv.height);
     cx.canvas.addEventListener("mousedown", mdown);
     cx.canvas.addEventListener("touchstart", tstar); //20181014
     strokes.push(null); //1 based
+
+    bottled = "";
 }
 
 
 function playback(){
 
-cx.fillStyle = "lightgrey";
-cx.fillRect(0,0,cnv.width, cnv.height);
+cleancvs();
 
 writestrokes("A");
+
+bottle();
+
+console.log("?bottled=" + bottled);
 }
+
+
+function bottle(){
+bottled = "";
+for (var s = 1; s < strokes.length ; s++){
+    bottled = bottled + '~' + strokes[s].qcompreA;
+    }
+}
+
+
+
 
 
 function writestrokes(mode){
@@ -97,7 +237,8 @@ function writestroke(str,sNo){
 
 function getrectilearr(str,sNo){
     var got = Rectile.eXecute(str,1);
-        //console.log("stroke No:"  + sNo +  ",to simpledrawer getrectilearr:" + got)
+        //console.log("got = Rectile.eXecute(" + str + ",1)");
+        //console.log("got is:"  + got +  " -> to simpledrawer,sNo" + sNo);
 
         simpledrawer(got,sNo,"cnv");
 }
@@ -145,9 +286,10 @@ var lag = 0;
             lag2 = 0;
         }
 
-        //console.log("lag is " + lag2 + " milliseconds in decimals");
-
-                cx.fillRect(to,le,wi,he);
+                //cx.fillRect(to,le,wi,he);
+                cx.beginPath();
+                cx.arc(to-1, le-1, 1, 0, 7); //test 20181023
+                cx.stroke();
                 curr = curr + 1;
                 if(curr == rcnt){return;} else {setTimeout(done,lag2);}
     }
@@ -234,7 +376,6 @@ var lag = 0;
                 //ev.preventDefault();
     
                 cx.canvas.addEventListener("mouseup", function(ev) {
-                     //console.log("mousemove removed");
                      cx.canvas.removeEventListener("mousemove",namedf,true); 
                    }
                   ,true);
@@ -268,13 +409,12 @@ mystrk = Object.create(null);
 
         //if (ev.which == 1) {
 
-           thecnvrect = ev.target.getBoundingClientRect();
+           //thecnvrect = ev.touches[0].target.getBoundingClientRect();
            //console.log("touch down on canvas, X:" + (ev.touches[0].clientX - thecnvrect.left) + ",Y:" + (ev.touches[0].clientY - thecnvrect.top) );
 
            //ev.preventDefault();
 
            cx.canvas.addEventListener("touchend", function(ev) {
-                //console.log("mousemove removed");
                 cx.canvas.removeEventListener("touchmove",namedf,true); 
               }
              ,true);
@@ -290,14 +430,17 @@ mystrk = Object.create(null);
 
     function tmove(ev,str){
     
-    thecnvrect = ev.target.getBoundingClientRect();
+    ev.preventDefault();
+    
+    thecnvrect = ev.touches[0].target.getBoundingClientRect();
     //console.log("mmove on canvas, X:" + (ev.clientX - thecnvrect.left) + ",Y:" + (ev.clientY - thecnvrect.top) );
 
     var adrag = Object.create(null);
         //adrag.px = ev.pageX;
         //adrag.py = ev.pageY;
-        adrag.px = ev.touches[0].clientX - thecnvrect.left;
-        adrag.py = ev.touches[0].clientY - Math.round(thecnvrect.top); //20181012
+        adrag.px = Math.round(ev.touches[0].clientX) - Math.round(thecnvrect.left);
+        adrag.py = Math.round(ev.touches[0].clientY) - Math.round(thecnvrect.top); //20181012
+        //when not round here, leads to the strokes starting from 0 , 0
         
         adrag.time = Date.now();
 
