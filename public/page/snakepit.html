@@ -124,6 +124,10 @@ if (bottled == ""){
     }
 
 link = curl + "?bottled=" + bottled;
+
+//20181230
+link = 'https://downhillsoftjspace.firebaseapp.com/page/snakepit.html?bottled=' + bottled; 
+
 plac.innerHTML = '<a class="training" href="' + link + '"  target="_blank">' + link + '</a><br>';
 
 countdown = 10;
@@ -322,13 +326,29 @@ var lag = 0;
                     var lastpx = str.drags[str.drags.length - 1].px;
                     var lastpy = str.drags[str.drags.length - 1].py;
                     var d = kokud(lastpx,adrag.px,lastpy,adrag.py);
+
                     if (d=='')
                         return; //nomove
-                    var tempsr =  d +  (adrag.time - str.drags[str.drags.length-1].time).toString(16)   + ";";
-                    str.qcompreA = str.qcompreA + tempsr;
-                    str.qcompreB = str.qcompreB + d
 
-                    str.drags.push(adrag);
+                    //new 20181221
+                    var rep = kokud2(lastpx,adrag.px,lastpy,adrag.py)[1];
+                    
+                    for (var i=0; i<rep; i++){
+                        var tempsr =  d +  (adrag.time - str.drags[str.drags.length-1].time).toString(16)   + ";";
+                        str.qcompreA = str.qcompreA + tempsr;
+                        str.qcompreB = str.qcompreB + d
+                        console.log("str.qcompreA:" +  str.qcompreA);
+                        console.log("str.qcompreB:" +  str.qcompreB);
+                        str.drags.push(adrag);
+                    }
+
+                    //var tempsr =  d +  (adrag.time - str.drags[str.drags.length-1].time).toString(16)   + ";";
+                    //str.qcompreA = str.qcompreA + tempsr;
+                    //str.qcompreB = str.qcompreB + d;
+
+                    //console.log("str.qcompreA:" +  str.qcompreA);
+                    //console.log("str.qcompreB:" +  str.qcompreB);
+                    //str.drags.push(adrag);
                 }
 
             str.qB = traductf(str.qcompreB);
@@ -352,6 +372,24 @@ var lag = 0;
         if(ly > cy && lx < cx ) return '7';
         return '';
     }
+
+
+    function kokud2(lx,cx,ly,cy){
+        var tempout = [];
+        if(ly ==cy && lx < cx ) {tempout.push('0'); tempout.push(cx - lx); return tempout};
+        if(ly < cy && lx < cx ) {tempout.push('1'); tempout.push(cx - lx); return tempout};
+        if(ly < cy && lx ==cx ) {tempout.push('2'); tempout.push(cy - ly); return tempout};
+        if(ly < cy && lx > cx ) {tempout.push('3'); tempout.push(cy - ly); return tempout};
+        if(ly ==cy && lx > cx ) {tempout.push('4'); tempout.push(lx - cx); return tempout};
+        if(ly > cy && lx > cx ) {tempout.push('5'); tempout.push(lx - cx); return tempout};
+        if(ly > cy && lx ==cx ) {tempout.push('6'); tempout.push(ly - cy); return tempout};
+        if(ly > cy && lx < cx ) {tempout.push('7'); tempout.push(ly - cy); return tempout};
+        tempout.push('');
+        tempout.push(0);
+        return tempout;
+
+    }
+
     
     function mdown(ev){
 
@@ -455,11 +493,23 @@ mystrk = Object.create(null);
                 var d = kokud(lastpx,adrag.px,lastpy,adrag.py);
                 if (d=='')
                     return; //nomove
-                var tempsr =  d +  (adrag.time - str.drags[str.drags.length-1].time).toString(16)   + ";";
-                str.qcompreA = str.qcompreA + tempsr;
-                str.qcompreB = str.qcompreB + d
 
-                str.drags.push(adrag);
+                //new 20181230
+                var rep = kokud2(lastpx,adrag.px,lastpy,adrag.py)[1];
+                    
+                    for (var i=0; i<rep; i++){
+                        var tempsr =  d +  (adrag.time - str.drags[str.drags.length-1].time).toString(16)   + ";";
+                        str.qcompreA = str.qcompreA + tempsr;
+                        str.qcompreB = str.qcompreB + d
+                        console.log("str.qcompreA:" +  str.qcompreA);
+                        console.log("str.qcompreB:" +  str.qcompreB);
+                        str.drags.push(adrag);
+                    }
+
+                //var tempsr =  d +  (adrag.time - str.drags[str.drags.length-1].time).toString(16)   + ";";
+                //str.qcompreA = str.qcompreA + tempsr;
+                //str.qcompreB = str.qcompreB + d
+                //str.drags.push(adrag);
             }
 
         str.qB = traductf(str.qcompreB);
